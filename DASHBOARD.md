@@ -9,10 +9,13 @@ Alpha Policlínica (`clintia-br/Alpha-relatorio`).
 
 ## Estado atual
 
-A página está construída e funcionando. O que ela mostra hoje é a **tela de
-setup**, porque `DADOS.meses` está vazio — não há dados das contas da Mais Med
-disponíveis. Assim que o primeiro mês for carregado, a tela de setup some
-sozinha e o relatório aparece no lugar.
+**Google Ads carregado:** abril a agosto de 2026, a partir do export da conta
+(`insights_mais_med.csv`, 4/4 a 25/8). São 5 meses, 5 campanhas e 31 termos de
+busca, totalizando R$ 3.216,58 e 220,99 conversões.
+
+**Meta Ads pendente:** a chave `meta` de todos os meses está vazia. A aba Meta
+Ads e os blocos de comparação entre plataformas ficam ocultos ou marcados como
+"sem veiculação" até a conta ser compartilhada (ver item 1 abaixo).
 
 ---
 
@@ -32,32 +35,36 @@ investimento, conversas iniciadas, impressões e alcance por campanha.
 Com o acesso liberado, o fluxo é o mesmo usado no relatório da Alpha: os números
 vêm direto da conta via Meta Ads MCP, sem export manual.
 
-### 2. Conta do Google Ads — **bloqueia**
+### 2. Conta do Google Ads — **resolvido para 2026**
 
-Necessário:
+Alimentado pelo export da base por dia + palavra-chave. Para atualizar, basta
+gerar o export novamente e rodar o conversor (ver *Atualizar os dados* abaixo).
 
-- ID da conta (CID, formato `000-000-0000`);
-- o export mensal da aba **Campanhas**, com as colunas `Custo`, `Impr.`,
-  `Cliques` e `Conversões`.
+Não há conector de Google Ads disponível, então continua sendo export manual —
+mesmo caminho do relatório da Alpha. O que muda é que aqui o export não precisa
+ser transcrito à mão: o conversor faz a agregação.
 
-Não há conector de Google Ads disponível — no relatório da Alpha esses números
-também vêm do export manual da interface. Alternativa: acesso de leitura à conta
-para que a Clintia gere o export.
+### 3. Rastreamento de abril e maio — **confirmar**
 
-### 3. Definição do que conta como resultado — **definir**
+`PRIMEIRA CAMPANHA` rodou de 05/04 a 31/05 com R$ 420,30 de investimento, 230
+cliques e **zero conversões registradas**. Todas as outras campanhas, de junho em
+diante, registram conversões normalmente.
 
-No modelo da Alpha: Google = **leads** (conversões) e Meta = **conversas
-iniciadas**. Vale confirmar se é o mesmo critério para a Mais Med, já que aqui o
-canal de marcação é o WhatsApp e o site institucional é novo — se a conversão do
-Google for clique-para-WhatsApp em vez de formulário, o rótulo "lead" continua
-válido, mas a origem muda e isso precisa estar claro para o cliente.
+O padrão é típico de tag de conversão ausente, não de campanha sem resultado —
+mas isso precisa ser confirmado na conta antes de afirmar qualquer coisa ao
+cliente. Nesses dois meses o relatório mostra CPL como `—` em vez de um número
+inventado, e exibe um alerta explicando a lacuna.
 
-### 4. Recorte e periodicidade — **definir**
+Vale também confirmar o critério de conversão em vigor: se for clique-para-
+WhatsApp em vez de formulário, o rótulo "lead" continua válido, mas a origem
+muda e isso precisa estar claro no relatório.
 
-Um bloco por mês, com o mês corrente marcado como parcial (o relatório calcula
-o ritmo diário para permitir comparação justa entre um mês parcial e meses
-fechados). Definir a partir de qual mês o relatório começa — a primeira campanha
-de tráfego pago (pediatria, Cláusula 6) é o marco zero.
+### 4. Recorte e periodicidade — **definido pelo export**
+
+Um bloco por mês, gerado automaticamente. Apenas o mês mais recente do export é
+marcado como parcial; nos meses anteriores, uma janela curta significa que a
+veiculação parou antes do fim do mês, não que o mês esteja aberto. O relatório
+calcula o ritmo diário para permitir comparação justa entre eles.
 
 ### 5. Orçamento planejado por especialidade — **definir**
 
@@ -74,60 +81,60 @@ Deploy na Vercel a partir deste repositório. `vercel.json` já envia
 
 ---
 
-## Como carregar um mês
+## Atualizar os dados
 
-Abra `dashboard.html`, localize a constante `DADOS` no topo do bloco `<script>`
-e acrescente um objeto ao array `meses`. Nada mais precisa ser alterado.
+### Google Ads — via conversor
+
+1. No Google Ads, gere o export da base com granularidade de **dia** e
+   **palavra-chave** (mesmo formato do `insights_mais_med.csv`: colunas
+   `Campanha`, `Dia`, `Pesquisar palavra-chave`, `Pesquisar tipo de
+   correspondência de palavra-chave`, `Impr.`, `Cliques`, `CTR`,
+   `Código da moeda`, `CPC méd.`, `Custo`, `Conversões`).
+2. Rode o conversor:
+
+   ```bash
+   python3 tools/csv-google-para-dados.py export.csv > meses.js
+   ```
+
+3. Substitua o conteúdo de `DADOS.meses`, em `dashboard.html`, pela saída.
+
+O conversor agrega por campanha e por palavra-chave, monta os meses do mais
+recente para o mais antigo, marca como parcial apenas o último e insere
+automaticamente o alerta de rastreamento em meses com investimento e nenhuma
+conversão.
+
+### Meta Ads — manual, por enquanto
+
+Assim que a conta for compartilhada, os números vêm via Meta Ads MCP e entram na
+chave `meta` de cada mês:
 
 ```js
-const DADOS = {
-  cliente:  'Clínica Mais Med',
-  operador: 'Clintia',
-  meses: [
-    {
-      id:        'setembro-2026',        // slug único
-      rotulo:    'Setembro 2026',        // texto do botão do seletor
-      periodo:   '01/09 – 30/09',        // chip do cabeçalho
-      dias:      30,                     // dias com veiculação no recorte
-      diasNoMes: 30,                     // total de dias do mês
-      parcial:   false,                  // true = mês em andamento
-
-      // opcional: verba prevista para o recorte
-      orcamento: { google: 3000, meta: 1500 },
-
-      google: [
-        { nome: '[MaisMed] Pediatria', investimento: 812.40, impressoes: 9120, cliques: 940, leads: 118 }
-      ],
-
-      meta: [
-        { nome: '[MaisMed][WPP] Pediatria', investimento: 640.00, impressoes: 71200, alcance: 28400, conversas: 214 }
-      ],
-
-      // opcional
-      planoDiario: [
-        { especialidade: 'Pediatria', google: 100, meta: 50 }
-      ],
-
-      // opcional
-      alertas: [
-        { tipo: 'amber', icone: '⚠️', titulo: 'Título curto', texto: 'Explicação.' }
-      ],
-
-      // opcional
-      destaques: [
-        { icone: '📈', titulo: 'Título curto', texto: 'Leitura do número.' }
-      ]
-    }
-  ]
-};
+meta: [
+  { nome: '[MaisMed][WPP] Pediatria', investimento: 640.00, impressoes: 71200, alcance: 28400, conversas: 214 }
+],
 ```
 
-O mês mais recente deve ficar **em primeiro** no array — é ele que abre por
-padrão. O seletor de mês só aparece quando há dois ou mais meses.
+Preenchida essa chave, a aba Meta Ads, o comparativo entre plataformas e os
+cards de distribuição passam a aparecer sozinhos.
+
+### Campos opcionais
+
+Podem ser acrescentados a mão em qualquer mês:
+
+```js
+orcamento:   { google: 3000, meta: 1500 },                        // verba prevista no recorte
+planoDiario: [ { especialidade: 'Pediatria', google: 100, meta: 50 } ],
+alertas:     [ { tipo: 'amber', icone: '⚠️', titulo: '…', texto: '…' } ],
+destaques:   [ { icone: '📈', titulo: '…', texto: '…' } ]
+```
+
+`orcamento` liga o bloco *Orçamento Esperado x Investido Real*; `planoDiario`
+liga o *Investimento Diário por Especialidade*. Sem eles, os blocos simplesmente
+não são renderizados.
 
 ### De onde vem cada campo
 
-| Campo | Google Ads (export "Campanhas") | Meta Ads (MCP / Gerenciador) |
+| Campo | Google Ads (export) | Meta Ads (MCP / Gerenciador) |
 |---|---|---|
 | `investimento` | Custo | `spend` |
 | `impressoes` | Impr. | `impressions` |
@@ -140,10 +147,9 @@ padrão. O seletor de mês só aparece quando há dois ou mais meses.
 
 Não preencha à mão: CPL, CPR, CTR, totais por plataforma, total consolidado,
 investimento/dia, resultados/dia, percentuais de distribuição, tabela de ritmo
-diário entre meses, diferença e % consumido do orçamento, e a projeção de
-investimento para 7/15/30 dias. Tudo deriva dos campos acima.
-
----
+diário entre meses, diferença e % consumido do orçamento, projeção de
+investimento para 7/15/30 dias, resumo por tipo de correspondência e detecção de
+palavras-chave duplicadas entre campanhas. Tudo deriva dos campos acima.
 
 ## Estrutura da página
 
@@ -156,7 +162,10 @@ Um seletor de mês no topo e quatro abas por mês, iguais às da Alpha:
    impressões) e barras de investimento e leads.
 3. **Meta Ads** — KPIs, tabela por campanha (investimento, conversas, CPR,
    impressões, alcance) e barras de investimento e conversas.
-4. **Todas as Campanhas** — as duas listas completas, lado a lado.
+4. **Palavras-chave** — só aparece quando o mês tem detalhamento por termo.
+   Traz CPL por palavra-chave, investimento sem retorno, desempenho por tipo de
+   correspondência e alerta de termos que disputam entre campanhas.
+5. **Todas as Campanhas** — as duas listas completas, lado a lado.
 
 ---
 

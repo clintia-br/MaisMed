@@ -211,6 +211,8 @@ td.neg { color: var(--red); }
      orcamento: { google: 0, meta: 0 },   // opcional: verba prevista no recorte
      google:    [ { nome, investimento, impressoes, cliques, leads } ],
      meta:      [ { nome, investimento, impressoes, alcance, conversas } ],
+     keywords:  [ { termo, campanha, correspondencia, investimento,
+                    impressoes, cliques, leads } ],                // opcional
      planoDiario: [ { especialidade, google, meta } ],   // opcional
      alertas:   [ { tipo:'amber'|'teal', icone, titulo, texto } ],  // opcional
      destaques: [ { icone, titulo, texto } ]                        // opcional
@@ -221,8 +223,138 @@ const DADOS = {
   cliente:  'Clínica Mais Med',
   operador: 'Clintia',
   meses: [
-    /* Nenhum mês fechado ainda. Ao receber o primeiro recorte, adicione um
-       objeto de mês aqui seguindo a estrutura documentada acima. */
+    /* Google Ads gerado por tools/csv-google-para-dados.py a partir do export da conta.
+       Meta Ads ainda sem dados — 'meta' fica vazio até a conta ser compartilhada. */
+    {
+      id: "agosto-2026",
+      rotulo: "Agosto 2026",
+      periodo: "01/08 – 25/08",
+      dias: 25, diasNoMes: 31, parcial: true,
+      google: [
+        { nome: "[Clínico Geral]", investimento: 251.65, impressoes: 1029, cliques: 161, leads: 53.0 },
+        { nome: "[Pediatria]", investimento: 251.18, impressoes: 1279, cliques: 161, leads: 51.0 },
+        { nome: "[Ultrassom]", investimento: 178.73, impressoes: 213, cliques: 27, leads: 9.0 },
+        { nome: "[Marca]", investimento: 159.5, impressoes: 180, cliques: 55, leads: 11.0 },
+      ],
+      meta: [],
+      keywords: [
+        { termo: "clínica médica ipiaú", campanha: "[Pediatria]", correspondencia: "Correspondência de frase", investimento: 231.5, impressoes: 1032, cliques: 148, leads: 50.0 },
+        { termo: "clínica médica ipiaú", campanha: "[Clínico Geral]", correspondencia: "Correspondência de frase", investimento: 222.93, impressoes: 875, cliques: 142, leads: 48.0 },
+        { termo: "ultrassom ipiaú", campanha: "[Ultrassom]", correspondencia: "Correspondência de frase", investimento: 113.25, impressoes: 158, cliques: 20, leads: 6.0 },
+        { termo: "clínica mais med ipiaú", campanha: "[Marca]", correspondencia: "Correspondência exata", investimento: 81.14, impressoes: 83, cliques: 30, leads: 8.0 },
+        { termo: "ultrassonografia ipiaú", campanha: "[Ultrassom]", correspondencia: "Correspondência de frase", investimento: 65.48, impressoes: 55, cliques: 7, leads: 3.0 },
+        { termo: "Mais Med Ipiaú", campanha: "[Marca]", correspondencia: "Correspondência de frase", investimento: 46.6, impressoes: 46, cliques: 15, leads: 3.0 },
+        { termo: "Clinica Mais Med", campanha: "[Marca]", correspondencia: "Correspondência de frase", investimento: 31.76, impressoes: 50, cliques: 10, leads: 0.0 },
+        { termo: "pediatra ipiaú", campanha: "[Pediatria]", correspondencia: "Correspondência de frase", investimento: 19.68, impressoes: 247, cliques: 13, leads: 1.0 },
+        { termo: "clinica popular", campanha: "[Clínico Geral]", correspondencia: "Correspondência ampla", investimento: 13.84, impressoes: 102, cliques: 10, leads: 2.0 },
+        { termo: "climed ipiaú", campanha: "[Clínico Geral]", correspondencia: "Correspondência exata", investimento: 11.12, impressoes: 24, cliques: 6, leads: 2.0 },
+        { termo: "med mais consultas", campanha: "[Clínico Geral]", correspondencia: "Correspondência ampla", investimento: 3.76, impressoes: 28, cliques: 3, leads: 1.0 },
+        { termo: "clínica mais med fotos", campanha: "[Marca]", correspondencia: "Correspondência exata", investimento: 0.0, impressoes: 1, cliques: 0, leads: 0.0 },
+      ]
+    },
+    {
+      id: "julho-2026",
+      rotulo: "Julho 2026",
+      periodo: "01/07 – 31/07",
+      dias: 31, diasNoMes: 31, parcial: false,
+      google: [
+        { nome: "[Clínico Geral]", investimento: 607.24, impressoes: 781, cliques: 92, leads: 27.33 },
+        { nome: "[Ultrassom]", investimento: 437.44, impressoes: 551, cliques: 83, leads: 26.33 },
+        { nome: "[Pediatria]", investimento: 409.21, impressoes: 879, cliques: 82, leads: 21.5 },
+        { nome: "[Marca]", investimento: 223.85, impressoes: 297, cliques: 62, leads: 9.83 },
+      ],
+      meta: [],
+      keywords: [
+        { termo: "med mais consultas", campanha: "[Clínico Geral]", correspondencia: "Correspondência ampla", investimento: 345.85, impressoes: 474, cliques: 44, leads: 10.5 },
+        { termo: "pediatra ipiaú", campanha: "[Pediatria]", correspondencia: "Correspondência de frase", investimento: 293.6, impressoes: 686, cliques: 65, leads: 18.0 },
+        { termo: "ultrassonografia ipiaú", campanha: "[Ultrassom]", correspondencia: "Correspondência de frase", investimento: 251.04, impressoes: 378, cliques: 55, leads: 15.0 },
+        { termo: "ultrassom ipiaú", campanha: "[Ultrassom]", correspondencia: "Correspondência de frase", investimento: 186.4, impressoes: 173, cliques: 28, leads: 11.33 },
+        { termo: "clinica popular", campanha: "[Clínico Geral]", correspondencia: "Correspondência ampla", investimento: 154.41, impressoes: 188, cliques: 31, leads: 12.83 },
+        { termo: "Mais Med Ipiaú", campanha: "[Marca]", correspondencia: "Correspondência de frase", investimento: 133.11, impressoes: 158, cliques: 35, leads: 7.0 },
+        { termo: "clínica médica ipiaú", campanha: "[Pediatria]", correspondencia: "Correspondência de frase", investimento: 115.61, impressoes: 193, cliques: 17, leads: 3.5 },
+        { termo: "clínica médica ipiaú", campanha: "[Clínico Geral]", correspondencia: "Correspondência de frase", investimento: 106.98, impressoes: 119, cliques: 17, leads: 4.0 },
+        { termo: "Clinica Mais Med", campanha: "[Marca]", correspondencia: "Correspondência de frase", investimento: 56.35, impressoes: 87, cliques: 14, leads: 1.0 },
+        { termo: "clínica mais med ipiaú", campanha: "[Marca]", correspondencia: "Correspondência exata", investimento: 34.39, impressoes: 52, cliques: 13, leads: 1.83 },
+      ]
+    },
+    {
+      id: "junho-2026",
+      rotulo: "Junho 2026",
+      periodo: "04/06 – 30/06",
+      dias: 26, diasNoMes: 30, parcial: false,
+      google: [
+        { nome: "[Marca]", investimento: 222.51, impressoes: 311, cliques: 50, leads: 10.0 },
+        { nome: "[Pediatria]", investimento: 54.97, impressoes: 98, cliques: 9, leads: 2.0 },
+      ],
+      meta: [],
+      keywords: [
+        { termo: "Mais Med Ipiaú", campanha: "[Marca]", correspondencia: "Correspondência de frase", investimento: 143.21, impressoes: 164, cliques: 31, leads: 9.0 },
+        { termo: "Clinica Mais Med", campanha: "[Marca]", correspondencia: "Correspondência de frase", investimento: 79.3, impressoes: 147, cliques: 19, leads: 1.0 },
+        { termo: "pediatra ipiaú", campanha: "[Pediatria]", correspondencia: "Correspondência exata", investimento: 54.97, impressoes: 98, cliques: 9, leads: 2.0 },
+      ]
+    },
+    {
+      id: "maio-2026",
+      rotulo: "Maio 2026",
+      periodo: "13/05 – 31/05",
+      dias: 13, diasNoMes: 31, parcial: false,
+      alertas: [
+        { tipo: "amber", icone: "🏷️", titulo: "Período sem conversões registradas", texto: "Houve investimento (R$ 191,18) e cliques, mas nenhuma conversão foi contabilizada. Confirmar se a tag de conversão já estava instalada neste período — sem ela, o Google registra o clique mas não o contato gerado, e o CPL fica indisponível." },
+      ],
+      google: [
+        { nome: "PRIMEIRA CAMPANHA", investimento: 191.18, impressoes: 929, cliques: 105, leads: 0.0 },
+      ],
+      meta: [],
+      keywords: [
+        { termo: "clínica médica", campanha: "PRIMEIRA CAMPANHA", correspondencia: "Correspondência ampla", investimento: 91.9, impressoes: 480, cliques: 59, leads: 0.0 },
+        { termo: "clinica medica", campanha: "PRIMEIRA CAMPANHA", correspondencia: "Correspondência ampla", investimento: 35.99, impressoes: 88, cliques: 20, leads: 0.0 },
+        { termo: "ultrassom", campanha: "PRIMEIRA CAMPANHA", correspondencia: "Correspondência ampla", investimento: 24.92, impressoes: 74, cliques: 3, leads: 0.0 },
+        { termo: "Pediatra", campanha: "PRIMEIRA CAMPANHA", correspondencia: "Correspondência ampla", investimento: 18.49, impressoes: 85, cliques: 8, leads: 0.0 },
+        { termo: "clinica ipiau", campanha: "PRIMEIRA CAMPANHA", correspondencia: "Correspondência ampla", investimento: 12.0, impressoes: 99, cliques: 10, leads: 0.0 },
+        { termo: "médico", campanha: "PRIMEIRA CAMPANHA", correspondencia: "Correspondência ampla", investimento: 7.88, impressoes: 71, cliques: 5, leads: 0.0 },
+        { termo: "cardiologista", campanha: "PRIMEIRA CAMPANHA", correspondencia: "Correspondência ampla", investimento: 0.0, impressoes: 9, cliques: 0, leads: 0.0 },
+        { termo: "eletrocardiograma.", campanha: "PRIMEIRA CAMPANHA", correspondencia: "Correspondência ampla", investimento: 0.0, impressoes: 3, cliques: 0, leads: 0.0 },
+        { termo: "exames clinicos", campanha: "PRIMEIRA CAMPANHA", correspondencia: "Correspondência ampla", investimento: 0.0, impressoes: 7, cliques: 0, leads: 0.0 },
+        { termo: "endoscopia", campanha: "PRIMEIRA CAMPANHA", correspondencia: "Correspondência ampla", investimento: 0.0, impressoes: 3, cliques: 0, leads: 0.0 },
+        { termo: "otorrino", campanha: "PRIMEIRA CAMPANHA", correspondencia: "Correspondência ampla", investimento: 0.0, impressoes: 2, cliques: 0, leads: 0.0 },
+        { termo: "ortopedista", campanha: "PRIMEIRA CAMPANHA", correspondencia: "Correspondência ampla", investimento: 0.0, impressoes: 6, cliques: 0, leads: 0.0 },
+        { termo: "endocrino", campanha: "PRIMEIRA CAMPANHA", correspondencia: "Correspondência ampla", investimento: 0.0, impressoes: 1, cliques: 0, leads: 0.0 },
+        { termo: "clínico geral", campanha: "PRIMEIRA CAMPANHA", correspondencia: "Correspondência ampla", investimento: 0.0, impressoes: 1, cliques: 0, leads: 0.0 },
+      ]
+    },
+    {
+      id: "abril-2026",
+      rotulo: "Abril 2026",
+      periodo: "05/04 – 27/04",
+      dias: 23, diasNoMes: 30, parcial: false,
+      alertas: [
+        { tipo: "amber", icone: "🏷️", titulo: "Período sem conversões registradas", texto: "Houve investimento (R$ 229,12) e cliques, mas nenhuma conversão foi contabilizada. Confirmar se a tag de conversão já estava instalada neste período — sem ela, o Google registra o clique mas não o contato gerado, e o CPL fica indisponível." },
+      ],
+      google: [
+        { nome: "PRIMEIRA CAMPANHA", investimento: 229.12, impressoes: 1153, cliques: 125, leads: 0.0 },
+      ],
+      meta: [],
+      keywords: [
+        { termo: "clínica médica", campanha: "PRIMEIRA CAMPANHA", correspondencia: "Correspondência ampla", investimento: 182.65, impressoes: 767, cliques: 97, leads: 0.0 },
+        { termo: "médico", campanha: "PRIMEIRA CAMPANHA", correspondencia: "Correspondência ampla", investimento: 27.28, impressoes: 197, cliques: 17, leads: 0.0 },
+        { termo: "clinicas medicas", campanha: "PRIMEIRA CAMPANHA", correspondencia: "Correspondência ampla", investimento: 11.73, impressoes: 20, cliques: 5, leads: 0.0 },
+        { termo: "ortopedista", campanha: "PRIMEIRA CAMPANHA", correspondencia: "Correspondência ampla", investimento: 3.53, impressoes: 45, cliques: 2, leads: 0.0 },
+        { termo: "clinica ipiau", campanha: "PRIMEIRA CAMPANHA", correspondencia: "Correspondência exata", investimento: 2.12, impressoes: 52, cliques: 2, leads: 0.0 },
+        { termo: "consultas médicas", campanha: "PRIMEIRA CAMPANHA", correspondencia: "Correspondência ampla", investimento: 1.08, impressoes: 8, cliques: 1, leads: 0.0 },
+        { termo: "exames clinicos", campanha: "PRIMEIRA CAMPANHA", correspondencia: "Correspondência ampla", investimento: 0.73, impressoes: 5, cliques: 1, leads: 0.0 },
+        { termo: "endoscopia", campanha: "PRIMEIRA CAMPANHA", correspondencia: "Correspondência ampla", investimento: 0.0, impressoes: 10, cliques: 0, leads: 0.0 },
+        { termo: "otorrino", campanha: "PRIMEIRA CAMPANHA", correspondencia: "Correspondência ampla", investimento: 0.0, impressoes: 12, cliques: 0, leads: 0.0 },
+        { termo: "psiquiatra", campanha: "PRIMEIRA CAMPANHA", correspondencia: "Correspondência ampla", investimento: 0.0, impressoes: 12, cliques: 0, leads: 0.0 },
+        { termo: "pediatra", campanha: "PRIMEIRA CAMPANHA", correspondencia: "Correspondência ampla", investimento: 0.0, impressoes: 1, cliques: 0, leads: 0.0 },
+        { termo: "ultrassom", campanha: "PRIMEIRA CAMPANHA", correspondencia: "Correspondência ampla", investimento: 0.0, impressoes: 4, cliques: 0, leads: 0.0 },
+        { termo: "eletrocardiograma.", campanha: "PRIMEIRA CAMPANHA", correspondencia: "Correspondência ampla", investimento: 0.0, impressoes: 1, cliques: 0, leads: 0.0 },
+        { termo: "clinica consulta", campanha: "PRIMEIRA CAMPANHA", correspondencia: "Correspondência ampla", investimento: 0.0, impressoes: 1, cliques: 0, leads: 0.0 },
+        { termo: "Pediatra", campanha: "PRIMEIRA CAMPANHA", correspondencia: "Correspondência ampla", investimento: 0.0, impressoes: 13, cliques: 0, leads: 0.0 },
+        { termo: "cardiologista", campanha: "PRIMEIRA CAMPANHA", correspondencia: "Correspondência ampla", investimento: 0.0, impressoes: 2, cliques: 0, leads: 0.0 },
+        { termo: "exame popular", campanha: "PRIMEIRA CAMPANHA", correspondencia: "Correspondência ampla", investimento: 0.0, impressoes: 2, cliques: 0, leads: 0.0 },
+        { termo: "clinica medica", campanha: "PRIMEIRA CAMPANHA", correspondencia: "Correspondência ampla", investimento: 0.0, impressoes: 1, cliques: 0, leads: 0.0 },
+      ]
+    },
   ]
 };
 
@@ -234,7 +366,9 @@ const brl0  = n => 'R$ ' + n.toLocaleString('pt-BR', { maximumFractionDigits: 0 
 const num   = (n, c = 0) => n.toLocaleString('pt-BR', { minimumFractionDigits: c, maximumFractionDigits: c });
 const pct   = n => num(n, 1).replace('.', ',') + '%';
 const div   = (a, b) => (b ? a / b : 0);
+const cpx   = (custo, qtd) => (qtd ? brl(custo / qtd) : '—');   // CPL/CPR sem denominador vira travessão
 const esc   = s => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+const plural = (n, um, muitos) => `${num(n)} ${n === 1 ? um : muitos}`;
 
 /* ═══════════════════════════════════════════════════════════════════════
    AGREGAÇÃO
@@ -269,6 +403,8 @@ function consolidar(mes) {
   const resultados   = g.leads + m.conversas;
   return {
     g, m, investimento, resultados,
+    temGoogle:      g.investimento > 0 || g.leads > 0,
+    temMeta:        m.investimento > 0 || m.conversas > 0,
     cpr:            div(investimento, resultados),
     investDia:      div(investimento, mes.dias),
     resultadosDia:  div(resultados, mes.dias),
@@ -353,7 +489,7 @@ function secGeral(mes) {
       <td class="r">${m.dias}</td>
       <td class="r">${brl(x.investDia)}</td>
       <td class="r">${num(x.resultadosDia, 1)}</td>
-      <td class="r">${brl(x.cpr)}</td>
+      <td class="r">${cpx(x.investimento, x.resultados)}</td>
     </tr>`;
   };
   const ritmo = card('Ritmo Diário — comparação justa entre meses', 'Google + Meta', `
@@ -365,41 +501,47 @@ function secGeral(mes) {
         <td class="r">${mes.dias}</td>
         <td class="r">${brl(c.investDia)}</td>
         <td class="r">${num(c.resultadosDia, 1)}</td>
-        <td class="r">${brl(c.cpr)}</td>
+        <td class="r">${cpx(c.investimento, c.resultados)}</td>
       </tr></tfoot>
     </table></div>`);
 
   /* ── Comparativo por plataforma ── */
-  const plataformas = card('Comparativo por Plataforma', '', `
-    <div class="tbl-scroll"><table>
-      <thead><tr><th>Plataforma</th><th class="r">Investimento</th><th class="r">Resultados</th><th class="r">CPL / CPR</th><th class="r">% do Invest.</th></tr></thead>
-      <tbody>
-        <tr>
+  const linhasPlat = [
+    c.temGoogle ? `<tr>
           <td><span class="plat-dot" style="background:var(--google)"></span>Google Ads</td>
           <td class="r">${brl(c.g.investimento)}</td>
           <td class="r">${num(c.g.leads, 1)} leads</td>
-          <td class="r">${brl(c.g.cpl)}</td>
+          <td class="r">${cpx(c.g.investimento, c.g.leads)}</td>
           <td class="r">${pct(c.pctInvestG)}</td>
-        </tr>
-        <tr>
+        </tr>` : '',
+    c.temMeta ? `<tr>
           <td><span class="plat-dot" style="background:var(--meta)"></span>Meta Ads</td>
           <td class="r">${brl(c.m.investimento)}</td>
           <td class="r">${num(c.m.conversas, 0)} conversas</td>
-          <td class="r">${brl(c.m.cpr)}</td>
+          <td class="r">${cpx(c.m.investimento, c.m.conversas)}</td>
           <td class="r">${pct(c.pctInvestM)}</td>
-        </tr>
-      </tbody>
+        </tr>` : '',
+    !c.temMeta ? `<tr>
+          <td style="color:var(--t3)"><span class="plat-dot" style="background:var(--s3)"></span>Meta Ads</td>
+          <td class="r" colspan="4" style="text-align:left;color:var(--t3);font-family:'Inter',sans-serif;font-size:12px">Sem veiculação neste período</td>
+        </tr>` : ''
+  ].join('');
+
+  const plataformas = card('Comparativo por Plataforma', '', `
+    <div class="tbl-scroll"><table>
+      <thead><tr><th>Plataforma</th><th class="r">Investimento</th><th class="r">Resultados</th><th class="r">CPL / CPR</th><th class="r">% do Invest.</th></tr></thead>
+      <tbody>${linhasPlat}</tbody>
       <tfoot><tr>
         <td>Total Geral</td>
         <td class="r">${brl(c.investimento)}</td>
         <td class="r">${num(c.resultados, 1)} resultados</td>
-        <td class="r">${brl(c.cpr)}</td>
+        <td class="r">${cpx(c.investimento, c.resultados)}</td>
         <td class="r">100%</td>
       </tr></tfoot>
     </table></div>`);
 
   /* ── Distribuição ── */
-  const distribuicao = `<div class="dist-grid">
+  const distribuicao = !(c.temGoogle && c.temMeta) ? '' : `<div class="dist-grid">
     <div class="dist-card">
       <div class="dist-ttl">Investimento</div>
       <div class="dist-bar"><div class="dist-g" style="width:${c.pctInvestG.toFixed(1)}%"></div><div class="dist-m" style="width:${c.pctInvestM.toFixed(1)}%"></div></div>
@@ -471,7 +613,10 @@ function secGeral(mes) {
 
   /* ── Projeção com base no ritmo diário ── */
   const proj = d => `${brl0(c.investDia * d)}`;
-  const projNota = d => `Google ${brl0(div(c.g.investimento, mes.dias) * d)} · Meta ${brl0(div(c.m.investimento, mes.dias) * d)}`;
+  const projNota = d => [
+    c.temGoogle ? `Google ${brl0(div(c.g.investimento, mes.dias) * d)}` : '',
+    c.temMeta   ? `Meta ${brl0(div(c.m.investimento, mes.dias) * d)}`   : ''
+  ].filter(Boolean).join(' · ');
   const projecao = card('Projeção de Investimento', 'Com base no ritmo diário atual', `
     <div style="padding:20px"><div class="kpi-grid" style="margin-bottom:0">
       ${kpi('tc', 'Próximos 7 dias', proj(7), projNota(7))}
@@ -482,12 +627,12 @@ function secGeral(mes) {
   return `<div class="wrap">
     <div class="ey">${mes.parcial ? 'Consolidado Parcial' : 'Consolidado'} · ${esc(mes.rotulo)}</div>
     <h1 class="ttl">Performance Geral</h1>
-    <p class="sub">Google Ads + Meta Ads · ${nCampanhas} campanhas com veiculação · ${mes.dias} ${mes.parcial ? `dos ${mes.diasNoMes} dias do mês` : 'dias'}.</p>
+    <p class="sub">Google Ads + Meta Ads · ${plural(nCampanhas, 'campanha', 'campanhas')} com veiculação · ${mes.dias} ${mes.parcial ? `dos ${mes.diasNoMes} dias do mês` : (mes.dias === 1 ? 'dia' : 'dias')}.</p>
     ${alertas(avisoParcial.concat(mes.alertas || []))}
     <div class="kpi-grid">
       ${kpi('tc', 'Investimento Total', brl0(c.investimento), `Google + Meta Ads · ${mes.dias} dias`, `${brl(c.investDia)} / dia`)}
       ${kpi('tc', 'Total de Resultados', num(c.resultados, 0), 'Leads + Conversas', `${num(c.resultadosDia, 1)} / dia`)}
-      ${kpi('tc', 'CPL / CPR Consolidado', brl(c.cpr), 'Custo médio por resultado', `${num(c.resultados, 0)} resultados`)}
+      ${kpi('tc', 'CPL / CPR Consolidado', cpx(c.investimento, c.resultados), c.resultados ? 'Custo médio por resultado' : 'Nenhuma conversão registrada no período', c.resultados ? `${num(c.resultados, 0)} resultados` : 'verificar rastreamento', c.resultados ? 'neu' : 'dn')}
     </div>
     ${ritmo}${plataformas}${distribuicao}${plano}${orcamento}${projecao}${destaques(mes.destaques)}
   </div>`;
@@ -503,7 +648,7 @@ function tabelaGoogle(cs, t) {
       <td class="cam">${esc(c.nome)}</td>
       <td class="r">${brl(c.investimento)}</td>
       <td class="r">${num(c.leads, 1)}</td>
-      <td class="r">${brl(div(c.investimento, c.leads))}</td>
+      <td class="r">${cpx(c.investimento, c.leads)}</td>
       <td class="r">${pct(div(c.cliques, c.impressoes) * 100)}</td>
       <td class="r">${num(c.impressoes)}</td>
     </tr>`).join('')}</tbody>
@@ -511,7 +656,7 @@ function tabelaGoogle(cs, t) {
       <td>Total Google Ads</td>
       <td class="r">${brl(t.investimento)}</td>
       <td class="r">${num(t.leads, 1)} leads</td>
-      <td class="r">CPL ${brl(t.cpl)}</td>
+      <td class="r">CPL ${cpx(t.investimento, t.leads)}</td>
       <td class="r">${pct(t.ctr)}</td>
       <td class="r">${num(t.impressoes)}</td>
     </tr></tfoot>
@@ -525,11 +670,11 @@ function secGoogle(mes) {
   return `<div class="wrap">
     <div class="ey" style="color:var(--google)">Google Ads · ${esc(mes.rotulo)}${mes.parcial ? ' (parcial)' : ''}</div>
     <h1 class="ttl">Campanhas de Pesquisa</h1>
-    <p class="sub">${cs.length} campanhas ativas · ${mes.periodo} · dados do export "Campanhas" do Google Ads.</p>
+    <p class="sub">${plural(cs.length, 'campanha ativa', 'campanhas ativas')} · ${mes.periodo} · dados do export do Google Ads.</p>
     <div class="kpi-grid">
-      ${kpi('go', 'Investimento', brl0(t.investimento), `${cs.length} campanhas · ${mes.dias} dias`, `${brl(div(t.investimento, mes.dias))} / dia`)}
+      ${kpi('go', 'Investimento', brl0(t.investimento), `${plural(cs.length, 'campanha', 'campanhas')} · ${mes.dias} dias`, `${brl(div(t.investimento, mes.dias))} / dia`)}
       ${kpi('go', 'Total de Leads', num(t.leads, 0), 'Conversões no período', `${num(div(t.leads, mes.dias), 1)} leads / dia`)}
-      ${kpi('go', 'CPL Médio', brl(t.cpl), `CTR médio de ${pct(t.ctr)}`, `${num(t.cliques)} cliques`)}
+      ${kpi('go', 'CPL Médio', cpx(t.investimento, t.leads), `CTR médio de ${pct(t.ctr)}`, `${num(t.cliques)} cliques`, t.leads ? 'neu' : 'dn')}
     </div>
     ${card('Detalhamento por Campanha', 'ordenado por leads ↓',
       tabelaGoogle(cs, t) +
@@ -549,7 +694,7 @@ function tabelaMeta(cs, t) {
       <td class="cam">${esc(c.nome)}</td>
       <td class="r">${brl(c.investimento)}</td>
       <td class="r">${num(c.conversas)}</td>
-      <td class="r">${brl(div(c.investimento, c.conversas))}</td>
+      <td class="r">${cpx(c.investimento, c.conversas)}</td>
       <td class="r">${num(c.impressoes)}</td>
       <td class="r">${num(c.alcance)}</td>
     </tr>`).join('')}</tbody>
@@ -557,7 +702,7 @@ function tabelaMeta(cs, t) {
       <td>Total Meta Ads</td>
       <td class="r">${brl(t.investimento)}</td>
       <td class="r">${num(t.conversas)} conversas</td>
-      <td class="r">CPR ${brl(t.cpr)}</td>
+      <td class="r">CPR ${cpx(t.investimento, t.conversas)}</td>
       <td class="r">${num(t.impressoes)}</td>
       <td class="r">${num(t.alcance)}</td>
     </tr></tfoot>
@@ -567,15 +712,16 @@ function tabelaMeta(cs, t) {
 function secMeta(mes) {
   const cs = (mes.meta || []).slice().sort((a, b) => b.conversas - a.conversas);
   const t = somaMeta(cs);
-  if (!cs.length) return vazio('Meta Ads', 'Nenhuma campanha do Meta Ads com veiculação neste recorte.');
+  if (!cs.length) return vazio('Meta Ads',
+    'Nenhuma campanha do Meta Ads neste recorte. A conta de anúncios da Mais Med ainda não está compartilhada com a BM que a Clintia usa — ver DASHBOARD.md.');
   return `<div class="wrap">
     <div class="ey" style="color:var(--meta)">Meta Ads · ${esc(mes.rotulo)}${mes.parcial ? ' (parcial)' : ''}</div>
     <h1 class="ttl">Campanhas de Conversas</h1>
-    <p class="sub">${cs.length} campanhas com veiculação · ${mes.periodo} · dados puxados direto da conta via Meta Ads MCP.</p>
+    <p class="sub">${plural(cs.length, 'campanha', 'campanhas')} com veiculação · ${mes.periodo} · dados puxados direto da conta via Meta Ads MCP.</p>
     <div class="kpi-grid">
-      ${kpi('mt', 'Investimento', brl0(t.investimento), `${cs.length} campanhas · ${mes.dias} dias`, `${brl(div(t.investimento, mes.dias))} / dia`)}
+      ${kpi('mt', 'Investimento', brl0(t.investimento), `${plural(cs.length, 'campanha', 'campanhas')} · ${mes.dias} dias`, `${brl(div(t.investimento, mes.dias))} / dia`)}
       ${kpi('mt', 'Total de Conversas', num(t.conversas), 'Conversas iniciadas', `${num(div(t.conversas, mes.dias), 1)} conversas / dia`)}
-      ${kpi('mt', 'CPR Médio', brl(t.cpr), 'Custo por conversa', `${num(t.alcance)} de alcance`)}
+      ${kpi('mt', 'CPR Médio', cpx(t.investimento, t.conversas), 'Custo por conversa', `${num(t.alcance)} de alcance`)}
     </div>
     ${card('Detalhamento por Campanha', 'ordenado por conversas ↓',
       tabelaMeta(cs, t) +
@@ -595,11 +741,109 @@ function secTodas(mes) {
   return `<div class="wrap">
     <div class="ey">Google + Meta · ${esc(mes.rotulo)}${mes.parcial ? ' (parcial)' : ''}</div>
     <h1 class="ttl">Todas as Campanhas Ativas</h1>
-    <p class="sub">${g.length + m.length} campanhas com veiculação em ${mes.periodo}.</p>
-    ${g.length ? `<div class="ey" style="color:var(--google);margin-bottom:12px">Google Ads · ${g.length} campanhas</div>
+    <p class="sub">${plural(g.length + m.length, 'campanha', 'campanhas')} com veiculação em ${mes.periodo}.</p>
+    ${g.length ? `<div class="ey" style="color:var(--google);margin-bottom:12px">Google Ads · ${plural(g.length, 'campanha', 'campanhas')}</div>
       <div class="tcard" style="margin-bottom:28px">${tabelaGoogle(g, tg)}</div>` : ''}
-    ${m.length ? `<div class="ey" style="color:var(--meta);margin-bottom:12px">Meta Ads · ${m.length} campanhas</div>
+    ${m.length ? `<div class="ey" style="color:var(--meta);margin-bottom:12px">Meta Ads · ${plural(m.length, 'campanha', 'campanhas')}</div>
       <div class="tcard">${tabelaMeta(m, tm)}</div>` : ''}
+  </div>`;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
+   SEÇÃO · PALAVRAS-CHAVE (Google Ads)
+   Só existe quando o export tem granularidade de termo de busca.
+   ═══════════════════════════════════════════════════════════════════════ */
+function secKeywords(mes) {
+  const ks = (mes.keywords || []).slice().sort((a, b) => b.investimento - a.investimento);
+  if (!ks.length) return vazio('Palavras-chave', 'Este recorte não tem detalhamento por palavra-chave.');
+
+  const t = ks.reduce((a, k) => ({
+    investimento: a.investimento + k.investimento,
+    impressoes:   a.impressoes   + k.impressoes,
+    cliques:      a.cliques      + k.cliques,
+    leads:        a.leads        + k.leads
+  }), { investimento: 0, impressoes: 0, cliques: 0, leads: 0 });
+
+  const semConv   = ks.filter(k => k.investimento > 0 && !k.leads);
+  const gastoSemConv = semConv.reduce((a, k) => a + k.investimento, 0);
+  const comConv   = ks.filter(k => k.leads > 0);
+  const MIN_LEADS = 3;   // abaixo disso o CPL é ruído, não desempenho
+  const porCPL    = arr => arr.slice().sort((a, b) => div(a.investimento, a.leads) - div(b.investimento, b.leads))[0];
+  const melhor    = porCPL(comConv.filter(k => k.leads >= MIN_LEADS)) || porCPL(comConv);
+
+  /* termos que aparecem em mais de uma campanha disputam entre si no leilão */
+  const porTermo = {};
+  ks.forEach(k => { (porTermo[k.termo] = porTermo[k.termo] || []).push(k); });
+  const duplicados = Object.entries(porTermo).filter(([, v]) => v.length > 1);
+  const rotulo = k => (porTermo[k.termo].length > 1 ? `${k.termo} · ${k.campanha}` : k.termo);
+
+  const tabela = `<div class="tbl-scroll"><table>
+    <thead><tr>
+      <th>Palavra-chave</th><th>Campanha</th><th>Correspondência</th>
+      <th class="r">Investimento</th><th class="r">Leads</th><th class="r">CPL</th><th class="r">Cliques</th><th class="r">Impressões</th>
+    </tr></thead>
+    <tbody>${ks.map(k => `<tr>
+      <td class="cam" style="color:var(--text)">${esc(k.termo)}</td>
+      <td class="cam">${esc(k.campanha)}</td>
+      <td class="cam">${esc(k.correspondencia || '—')}</td>
+      <td class="r">${brl(k.investimento)}</td>
+      <td class="r">${num(k.leads, 1)}</td>
+      <td class="r"${!k.leads && k.investimento > 0 ? ' style="color:var(--red)"' : ''}>${cpx(k.investimento, k.leads)}</td>
+      <td class="r">${num(k.cliques)}</td>
+      <td class="r">${num(k.impressoes)}</td>
+    </tr>`).join('')}</tbody>
+    <tfoot><tr>
+      <td>Total</td><td></td><td></td>
+      <td class="r">${brl(t.investimento)}</td>
+      <td class="r">${num(t.leads, 1)} leads</td>
+      <td class="r">CPL ${cpx(t.investimento, t.leads)}</td>
+      <td class="r">${num(t.cliques)}</td>
+      <td class="r">${num(t.impressoes)}</td>
+    </tr></tfoot>
+  </table></div>`;
+
+  /* resumo por tipo de correspondência */
+  const porCorr = {};
+  ks.forEach(k => {
+    const c = porCorr[k.correspondencia || '—'] = porCorr[k.correspondencia || '—'] || { investimento: 0, leads: 0, cliques: 0 };
+    c.investimento += k.investimento; c.leads += k.leads; c.cliques += k.cliques;
+  });
+  const corr = card('Desempenho por Tipo de Correspondência', '', `
+    <div class="tbl-scroll"><table>
+      <thead><tr><th>Correspondência</th><th class="r">Investimento</th><th class="r">Leads</th><th class="r">CPL</th><th class="r">% do Invest.</th></tr></thead>
+      <tbody>${Object.entries(porCorr).sort((a, b) => b[1].investimento - a[1].investimento).map(([nome, v]) => `<tr>
+        <td>${esc(nome)}</td>
+        <td class="r">${brl(v.investimento)}</td>
+        <td class="r">${num(v.leads, 1)}</td>
+        <td class="r">${cpx(v.investimento, v.leads)}</td>
+        <td class="r">${pct(div(v.investimento, t.investimento) * 100)}</td>
+      </tr>`).join('')}</tbody>
+    </table></div>`);
+
+  const avisoDup = duplicados.length ? [{
+    tipo: 'amber', icone: '🔁',
+    titulo: `${duplicados.length === 1 ? 'Uma palavra-chave disputa' : duplicados.length + ' palavras-chave disputam'} entre campanhas`,
+    texto: duplicados.map(([termo, v]) => `"${termo}" aparece em ${v.map(x => x.campanha).join(' e ')}`).join('; ') +
+      '. Quando o mesmo termo está em mais de uma campanha, elas concorrem no mesmo leilão e o Google escolhe uma — o que costuma encarecer o clique e embaralhar a leitura de qual campanha entregou o resultado.'
+  }] : [];
+
+  return `<div class="wrap">
+    <div class="ey" style="color:var(--google)">Google Ads · ${esc(mes.rotulo)}${mes.parcial ? ' (parcial)' : ''}</div>
+    <h1 class="ttl">Palavras-chave</h1>
+    <p class="sub">${plural(ks.length, 'termo', 'termos')} com veiculação em ${mes.periodo}.</p>
+    ${alertas(avisoDup)}
+    <div class="kpi-grid">
+      ${kpi('go', 'Termos com veiculação', num(ks.length), `${comConv.length} ${comConv.length === 1 ? 'converteu' : 'converteram'} · ${semConv.length} sem conversão`)}
+      ${melhor ? kpi('go', 'Melhor CPL', cpx(melhor.investimento, melhor.leads), `${esc(melhor.termo)}${porTermo[melhor.termo].length > 1 ? ' · ' + esc(melhor.campanha) : ''}`, `${num(melhor.leads, 1)} leads`, 'up')
+               : kpi('go', 'Melhor CPL', '—', 'Nenhum termo converteu no período')}
+      ${kpi('go', 'Investimento sem retorno', brl0(gastoSemConv), `${pct(div(gastoSemConv, t.investimento) * 100)} da verba do período`, semConv.length ? plural(semConv.length, 'termo', 'termos') : 'nenhum', gastoSemConv ? 'dn' : 'up')}
+    </div>
+    ${card('Detalhamento por Palavra-chave', 'ordenado por investimento ↓',
+      tabela +
+      barras('Leads por Palavra-chave', comConv.slice().sort((a, b) => b.leads - a.leads).map(k => ({ nome: rotulo(k), valor: k.leads })), 'var(--teal)', v => num(v, 1) + ' leads') +
+      barras('Investimento por Palavra-chave', ks.filter(k => k.investimento > 0).map(k => ({ nome: rotulo(k), valor: k.investimento })), 'var(--google)', brl0)
+    )}
+    ${corr}
   </div>`;
 }
 
@@ -662,8 +906,11 @@ const ABAS = [
   { id: 'geral',  rotulo: 'Visão Geral',        render: secGeral },
   { id: 'google', rotulo: 'Google Ads',         render: secGoogle },
   { id: 'meta',   rotulo: 'Meta Ads',           render: secMeta },
+  { id: 'chaves', rotulo: 'Palavras-chave',     render: secKeywords, quando: m => (m.keywords || []).length },
   { id: 'todas',  rotulo: 'Todas as Campanhas', render: secTodas }
 ];
+
+const abasDe = mes => ABAS.filter(a => !a.quando || a.quando(mes));
 
 let mesAtual = DADOS.meses.length ? DADOS.meses[0].id : null;
 let abaAtual = 'geral';
@@ -674,6 +921,9 @@ function render() {
   if (!DADOS.meses.length) { app.innerHTML = telaSetup(); return; }
 
   const mes = DADOS.meses.find(m => m.id === mesAtual) || DADOS.meses[0];
+  const disponiveis = abasDe(mes);
+  const aba = disponiveis.find(a => a.id === abaAtual) || disponiveis[0];
+  abaAtual = aba.id;
 
   const seletor = DADOS.meses.length > 1 ? `<div class="switch"><div class="switch-inner">
     ${DADOS.meses.map(m => `<button class="switch-btn ${m.id === mes.id ? 'active' : ''}" data-mes="${m.id}">${esc(m.rotulo)}</button>`).join('')}
@@ -686,10 +936,10 @@ function render() {
         <span class="period-chip">${esc(mes.rotulo)} · ${esc(mes.periodo)}${mes.parcial ? ' (parcial)' : ''}</span>
       </div>
       <div class="tabs">
-        ${ABAS.map(a => `<button class="tab ${a.id === abaAtual ? 'on' : ''}" data-aba="${a.id}">${a.rotulo}</button>`).join('')}
+        ${disponiveis.map(a => `<button class="tab ${a.id === abaAtual ? 'on' : ''}" data-aba="${a.id}">${a.rotulo}</button>`).join('')}
       </div>
     </div>
-    <div class="sec on">${(ABAS.find(a => a.id === abaAtual) || ABAS[0]).render(mes)}</div>
+    <div class="sec on">${aba.render(mes)}</div>
     <div class="foot">${DADOS.cliente} · Relatório operado por ${DADOS.operador} · Documento confidencial</div>`;
 }
 

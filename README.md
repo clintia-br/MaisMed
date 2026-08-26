@@ -29,6 +29,8 @@ Não há dependências, não há etapa de build. A Vercel serve o `index.html` d
 ├── dashboard.html   # Relatório de performance Google Ads + Meta Ads
 ├── vercel.json      # headers de segurança + noindex
 ├── DASHBOARD.md     # como alimentar o relatório de performance
+├── tools/
+│   └── csv-google-para-dados.py   # export do Google Ads → dados do relatório
 ├── .gitignore
 └── README.md
 ```
