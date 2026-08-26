@@ -26,8 +26,6 @@
   --teal-bg:   rgba(14,159,142,.12);
   --google:    #4285F4;
   --google-bg: rgba(66,133,244,.1);
-  --meta:      #1877F2;
-  --meta-bg:   rgba(24,119,242,.1);
   --green:     #22c55e;
   --amber:     #f59e0b;
   --amber-bg:  rgba(245,158,11,.1);
@@ -98,7 +96,6 @@ body {
 .kpi { background: var(--s1); border: 1px solid var(--border); border-radius: var(--r); padding: 18px 20px; position: relative; overflow: hidden; }
 .kpi::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 2px; background: var(--teal); }
 .kpi.go::before { background: var(--google); }
-.kpi.mt::before { background: var(--meta); }
 .kpi-lbl { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .09em; color: var(--t3); margin-bottom: 10px; }
 .kpi-val { font-size: 28px; font-weight: 700; letter-spacing: -.03em; line-height: 1.1; }
 .kpi-val-sm { font-size: 24px; }
@@ -126,7 +123,6 @@ tfoot td { padding: 12px 20px; font-size: 11px; font-weight: 600; background: va
 tfoot td:first-child { font-family: 'Inter', sans-serif; font-size: 12px; }
 td.pos { color: var(--green); }
 td.neg { color: var(--red); }
-.plat-dot { width: 7px; height: 7px; border-radius: 50%; display: inline-block; margin-right: 7px; vertical-align: middle; }
 
 /* ── BARRAS ── */
 .chart-ttl { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .09em; color: var(--t3); padding: 15px 20px 10px; border-top: 1px solid var(--border); }
@@ -136,21 +132,6 @@ td.neg { color: var(--red); }
 .bar-tr { flex: 1; height: 18px; background: var(--s3); border-radius: 4px; overflow: hidden; }
 .bar-fi { height: 100%; border-radius: 4px; min-width: 2px; transition: width .35s ease; }
 .bar-vl { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--t2); width: 82px; flex-shrink: 0; }
-
-/* ── DISTRIBUIÇÃO ── */
-.dist-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 24px; }
-@media (max-width: 620px) { .dist-grid { grid-template-columns: 1fr; } }
-.dist-card { background: var(--s1); border: 1px solid var(--border); border-radius: var(--r); padding: 18px 20px; }
-.dist-ttl { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: var(--t3); margin-bottom: 13px; }
-.dist-bar { height: 7px; background: var(--s3); border-radius: 4px; overflow: hidden; display: flex; gap: 2px; margin-bottom: 13px; }
-.dist-g { height: 100%; background: var(--google); }
-.dist-m { height: 100%; background: var(--meta); }
-.dist-leg { display: flex; gap: 18px; flex-wrap: wrap; }
-.dl { display: flex; align-items: flex-start; gap: 7px; }
-.dl-dot { width: 7px; height: 7px; border-radius: 50%; margin-top: 5px; flex-shrink: 0; }
-.dl-lbl { font-size: 11px; color: var(--t2); }
-.dl-val { font-size: 15px; font-weight: 700; letter-spacing: -.02em; }
-.dl-pct { font-size: 10px; color: var(--t3); }
 
 /* ── INSIGHTS ── */
 .insights { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 24px; }
@@ -197,8 +178,9 @@ td.neg { color: var(--red); }
    Todo o resto da página (KPIs, totais, CPL/CPR, CTR, %, ritmo diário,
    projeções, barras) é calculado automaticamente a partir daqui.
 
-   Google Ads  → export "Campanhas" (Custo, Impr., Cliques, Conversões)
-   Meta Ads    → Meta Ads MCP / Gerenciador (spend, impressions, reach, results)
+   Fonte: export do Google Ads por dia + palavra-chave, convertido por
+   tools/csv-google-para-dados.py. A conta roda só Google Ads, com campanhas
+   de pesquisa otimizadas para captação de leads.
 
    Estrutura de um mês:
    {
@@ -208,12 +190,11 @@ td.neg { color: var(--red); }
      dias:      25,                       // dias com veiculação no recorte
      diasNoMes: 31,                       // total de dias do mês
      parcial:   true,                     // true = mês em andamento
-     orcamento: { google: 0, meta: 0 },   // opcional: verba prevista no recorte
+     orcamento: 3000,                     // opcional: verba prevista no recorte
      google:    [ { nome, investimento, impressoes, cliques, leads } ],
-     meta:      [ { nome, investimento, impressoes, alcance, conversas } ],
      keywords:  [ { termo, campanha, correspondencia, investimento,
-                    impressoes, cliques, leads } ],                // opcional
-     planoDiario: [ { especialidade, google, meta } ],   // opcional
+                    impressoes, cliques, leads } ],                 // opcional
+     planoDiario: [ { especialidade, investimentoDia } ],           // opcional
      alertas:   [ { tipo:'amber'|'teal', icone, titulo, texto } ],  // opcional
      destaques: [ { icone, titulo, texto } ]                        // opcional
    }
@@ -223,8 +204,7 @@ const DADOS = {
   cliente:  'Clínica Mais Med',
   operador: 'Clintia',
   meses: [
-    /* Google Ads gerado por tools/csv-google-para-dados.py a partir do export da conta.
-       Meta Ads ainda sem dados — 'meta' fica vazio até a conta ser compartilhada. */
+    /* Gerado por tools/csv-google-para-dados.py a partir do export da conta. */
     {
       id: "agosto-2026",
       rotulo: "Agosto 2026",
@@ -236,7 +216,6 @@ const DADOS = {
         { nome: "[Ultrassom]", investimento: 178.73, impressoes: 213, cliques: 27, leads: 9.0 },
         { nome: "[Marca]", investimento: 159.5, impressoes: 180, cliques: 55, leads: 11.0 },
       ],
-      meta: [],
       keywords: [
         { termo: "clínica médica ipiaú", campanha: "[Pediatria]", correspondencia: "Correspondência de frase", investimento: 231.5, impressoes: 1032, cliques: 148, leads: 50.0 },
         { termo: "clínica médica ipiaú", campanha: "[Clínico Geral]", correspondencia: "Correspondência de frase", investimento: 222.93, impressoes: 875, cliques: 142, leads: 48.0 },
@@ -263,7 +242,6 @@ const DADOS = {
         { nome: "[Pediatria]", investimento: 409.21, impressoes: 879, cliques: 82, leads: 21.5 },
         { nome: "[Marca]", investimento: 223.85, impressoes: 297, cliques: 62, leads: 9.83 },
       ],
-      meta: [],
       keywords: [
         { termo: "med mais consultas", campanha: "[Clínico Geral]", correspondencia: "Correspondência ampla", investimento: 345.85, impressoes: 474, cliques: 44, leads: 10.5 },
         { termo: "pediatra ipiaú", campanha: "[Pediatria]", correspondencia: "Correspondência de frase", investimento: 293.6, impressoes: 686, cliques: 65, leads: 18.0 },
@@ -286,7 +264,6 @@ const DADOS = {
         { nome: "[Marca]", investimento: 222.51, impressoes: 311, cliques: 50, leads: 10.0 },
         { nome: "[Pediatria]", investimento: 54.97, impressoes: 98, cliques: 9, leads: 2.0 },
       ],
-      meta: [],
       keywords: [
         { termo: "Mais Med Ipiaú", campanha: "[Marca]", correspondencia: "Correspondência de frase", investimento: 143.21, impressoes: 164, cliques: 31, leads: 9.0 },
         { termo: "Clinica Mais Med", campanha: "[Marca]", correspondencia: "Correspondência de frase", investimento: 79.3, impressoes: 147, cliques: 19, leads: 1.0 },
@@ -304,7 +281,6 @@ const DADOS = {
       google: [
         { nome: "PRIMEIRA CAMPANHA", investimento: 191.18, impressoes: 929, cliques: 105, leads: 0.0 },
       ],
-      meta: [],
       keywords: [
         { termo: "clínica médica", campanha: "PRIMEIRA CAMPANHA", correspondencia: "Correspondência ampla", investimento: 91.9, impressoes: 480, cliques: 59, leads: 0.0 },
         { termo: "clinica medica", campanha: "PRIMEIRA CAMPANHA", correspondencia: "Correspondência ampla", investimento: 35.99, impressoes: 88, cliques: 20, leads: 0.0 },
@@ -333,7 +309,6 @@ const DADOS = {
       google: [
         { nome: "PRIMEIRA CAMPANHA", investimento: 229.12, impressoes: 1153, cliques: 125, leads: 0.0 },
       ],
-      meta: [],
       keywords: [
         { termo: "clínica médica", campanha: "PRIMEIRA CAMPANHA", correspondencia: "Correspondência ampla", investimento: 182.65, impressoes: 767, cliques: 97, leads: 0.0 },
         { termo: "médico", campanha: "PRIMEIRA CAMPANHA", correspondencia: "Correspondência ampla", investimento: 27.28, impressoes: 197, cliques: 17, leads: 0.0 },
@@ -385,39 +360,19 @@ function somaGoogle(cs) {
   return t;
 }
 
-function somaMeta(cs) {
-  const t = cs.reduce((a, c) => ({
-    investimento: a.investimento + (c.investimento || 0),
-    impressoes:   a.impressoes   + (c.impressoes   || 0),
-    alcance:      a.alcance      + (c.alcance      || 0),
-    conversas:    a.conversas    + (c.conversas    || 0)
-  }), { investimento: 0, impressoes: 0, alcance: 0, conversas: 0 });
-  t.cpr = div(t.investimento, t.conversas);
-  return t;
-}
-
 function consolidar(mes) {
   const g = somaGoogle(mes.google || []);
-  const m = somaMeta(mes.meta || []);
-  const investimento = g.investimento + m.investimento;
-  const resultados   = g.leads + m.conversas;
   return {
-    g, m, investimento, resultados,
-    temGoogle:      g.investimento > 0 || g.leads > 0,
-    temMeta:        m.investimento > 0 || m.conversas > 0,
-    cpr:            div(investimento, resultados),
-    investDia:      div(investimento, mes.dias),
-    resultadosDia:  div(resultados, mes.dias),
-    pctInvestG:     div(g.investimento, investimento) * 100,
-    pctInvestM:     div(m.investimento, investimento) * 100,
-    pctResG:        div(g.leads, resultados) * 100,
-    pctResM:        div(m.conversas, resultados) * 100
+    g,
+    investimento: g.investimento,
+    leads:        g.leads,
+    cpl:          g.cpl,
+    investDia:    div(g.investimento, mes.dias),
+    leadsDia:     div(g.leads, mes.dias)
   };
 }
 
-/* ═══════════════════════════════════════════════════════════════════════
-   COMPONENTES
-   ═══════════════════════════════════════════════════════════════════════ */
+
 function kpi(classe, rotulo, valor, nota, badge, badgeTipo) {
   return `<div class="kpi ${classe}">
     <div class="kpi-lbl">${rotulo}</div>
@@ -472,7 +427,7 @@ function destaques(lista) {
    ═══════════════════════════════════════════════════════════════════════ */
 function secGeral(mes) {
   const c = consolidar(mes);
-  const nCampanhas = (mes.google || []).length + (mes.meta || []).length;
+  const nCampanhas = (mes.google || []).length;
 
   const avisoParcial = mes.parcial ? [{
     tipo: 'amber', icone: '📅',
@@ -480,167 +435,114 @@ function secGeral(mes) {
     texto: `Os totais abaixo cobrem ${mes.dias} dos ${mes.diasNoMes} dias do mês e não devem ser comparados diretamente com os totais de meses fechados. Para leitura justa entre meses, use o ritmo diário.`
   }] : [];
 
-  /* ── Ritmo diário: comparação justa entre meses ── */
-  const outros = DADOS.meses.filter(m => m.id !== mes.id);
-  const linhaRitmo = m => {
+  /* ── Evolução mês a mês ── */
+  const ordem = DADOS.meses.slice().reverse();            // do mais antigo para o mais recente
+  const linhaMes = m => {
     const x = consolidar(m);
-    return `<tr>
-      <td>${esc(m.rotulo)}${m.parcial ? ' (parcial)' : ''}</td>
+    const atual = m.id === mes.id;
+    return `<tr${atual ? ' style="background:var(--teal-bg)"' : ''}>
+      <td${atual ? ' style="font-weight:600"' : ''}>${esc(m.rotulo)}${m.parcial ? ' (parcial)' : ''}</td>
       <td class="r">${m.dias}</td>
+      <td class="r">${brl(x.investimento)}</td>
       <td class="r">${brl(x.investDia)}</td>
-      <td class="r">${num(x.resultadosDia, 1)}</td>
-      <td class="r">${cpx(x.investimento, x.resultados)}</td>
+      <td class="r">${num(x.leads, 1)}</td>
+      <td class="r">${num(x.leadsDia, 1)}</td>
+      <td class="r">${cpx(x.investimento, x.leads)}</td>
     </tr>`;
   };
-  const ritmo = card('Ritmo Diário — comparação justa entre meses', 'Google + Meta', `
+  const acc = ordem.reduce((a, m) => {
+    const x = consolidar(m);
+    return { investimento: a.investimento + x.investimento, leads: a.leads + x.leads, dias: a.dias + m.dias };
+  }, { investimento: 0, leads: 0, dias: 0 });
+
+  /* meses com investimento e nenhuma conversão diluem o CPL acumulado sem ter
+     gerado nenhum lead medido — o acumulado dos meses rastreados é a leitura justa */
+  const semRastreio = ordem.filter(m => { const x = consolidar(m); return x.investimento > 0 && !x.leads; });
+  const gastoSemRastreio = semRastreio.reduce((a, m) => a + consolidar(m).investimento, 0);
+  const notaCPL = semRastreio.length ? `<div style="padding:12px 20px;border-top:1px solid var(--border);font-size:11px;color:var(--t2);line-height:1.6">
+      O acumulado inclui ${brl(gastoSemRastreio)} investidos em ${semRastreio.map(m => esc(m.rotulo)).join(' e ')}, ${semRastreio.length === 1 ? 'período' : 'períodos'} sem nenhuma conversão registrada.
+      Considerando apenas os meses com rastreamento ativo, o CPL acumulado é
+      <strong style="color:var(--teal-l)">${cpx(acc.investimento - gastoSemRastreio, acc.leads)}</strong>.
+    </div>` : '';
+
+  const evolucao = card('Evolução mês a mês', 'ritmo diário permite comparar mês parcial com mês fechado', `
     <div class="tbl-scroll"><table>
-      <thead><tr><th>Período</th><th class="r">Dias</th><th class="r">Investimento/dia</th><th class="r">Resultados/dia</th><th class="r">CPL / CPR</th></tr></thead>
-      <tbody>${outros.map(linhaRitmo).join('') || '<tr><td colspan="5" style="color:var(--t3);font-size:12px">Sem outros meses para comparar ainda.</td></tr>'}</tbody>
+      <thead><tr>
+        <th>Período</th><th class="r">Dias</th><th class="r">Investimento</th><th class="r">Invest./dia</th>
+        <th class="r">Leads</th><th class="r">Leads/dia</th><th class="r">CPL</th>
+      </tr></thead>
+      <tbody>${ordem.map(linhaMes).join('')}</tbody>
       <tfoot><tr>
-        <td>${esc(mes.rotulo)}${mes.parcial ? ' (parcial)' : ''}</td>
-        <td class="r">${mes.dias}</td>
-        <td class="r">${brl(c.investDia)}</td>
-        <td class="r">${num(c.resultadosDia, 1)}</td>
-        <td class="r">${cpx(c.investimento, c.resultados)}</td>
+        <td>Acumulado</td>
+        <td class="r">${acc.dias}</td>
+        <td class="r">${brl(acc.investimento)}</td>
+        <td class="r">${brl(div(acc.investimento, acc.dias))}</td>
+        <td class="r">${num(acc.leads, 1)}</td>
+        <td class="r">${num(div(acc.leads, acc.dias), 1)}</td>
+        <td class="r">${cpx(acc.investimento, acc.leads)}</td>
       </tr></tfoot>
-    </table></div>`);
-
-  /* ── Comparativo por plataforma ── */
-  const linhasPlat = [
-    c.temGoogle ? `<tr>
-          <td><span class="plat-dot" style="background:var(--google)"></span>Google Ads</td>
-          <td class="r">${brl(c.g.investimento)}</td>
-          <td class="r">${num(c.g.leads, 1)} leads</td>
-          <td class="r">${cpx(c.g.investimento, c.g.leads)}</td>
-          <td class="r">${pct(c.pctInvestG)}</td>
-        </tr>` : '',
-    c.temMeta ? `<tr>
-          <td><span class="plat-dot" style="background:var(--meta)"></span>Meta Ads</td>
-          <td class="r">${brl(c.m.investimento)}</td>
-          <td class="r">${num(c.m.conversas, 0)} conversas</td>
-          <td class="r">${cpx(c.m.investimento, c.m.conversas)}</td>
-          <td class="r">${pct(c.pctInvestM)}</td>
-        </tr>` : '',
-    !c.temMeta ? `<tr>
-          <td style="color:var(--t3)"><span class="plat-dot" style="background:var(--s3)"></span>Meta Ads</td>
-          <td class="r" colspan="4" style="text-align:left;color:var(--t3);font-family:'Inter',sans-serif;font-size:12px">Sem veiculação neste período</td>
-        </tr>` : ''
-  ].join('');
-
-  const plataformas = card('Comparativo por Plataforma', '', `
-    <div class="tbl-scroll"><table>
-      <thead><tr><th>Plataforma</th><th class="r">Investimento</th><th class="r">Resultados</th><th class="r">CPL / CPR</th><th class="r">% do Invest.</th></tr></thead>
-      <tbody>${linhasPlat}</tbody>
-      <tfoot><tr>
-        <td>Total Geral</td>
-        <td class="r">${brl(c.investimento)}</td>
-        <td class="r">${num(c.resultados, 1)} resultados</td>
-        <td class="r">${cpx(c.investimento, c.resultados)}</td>
-        <td class="r">100%</td>
-      </tr></tfoot>
-    </table></div>`);
-
-  /* ── Distribuição ── */
-  const distribuicao = !(c.temGoogle && c.temMeta) ? '' : `<div class="dist-grid">
-    <div class="dist-card">
-      <div class="dist-ttl">Investimento</div>
-      <div class="dist-bar"><div class="dist-g" style="width:${c.pctInvestG.toFixed(1)}%"></div><div class="dist-m" style="width:${c.pctInvestM.toFixed(1)}%"></div></div>
-      <div class="dist-leg">
-        <div class="dl"><div class="dl-dot" style="background:var(--google)"></div><div><div class="dl-lbl">Google Ads</div><div class="dl-val">${brl0(c.g.investimento)}</div><div class="dl-pct">${pct(c.pctInvestG)}</div></div></div>
-        <div class="dl"><div class="dl-dot" style="background:var(--meta)"></div><div><div class="dl-lbl">Meta Ads</div><div class="dl-val">${brl0(c.m.investimento)}</div><div class="dl-pct">${pct(c.pctInvestM)}</div></div></div>
-      </div>
-    </div>
-    <div class="dist-card">
-      <div class="dist-ttl">Resultados</div>
-      <div class="dist-bar"><div class="dist-g" style="width:${c.pctResG.toFixed(1)}%"></div><div class="dist-m" style="width:${c.pctResM.toFixed(1)}%"></div></div>
-      <div class="dist-leg">
-        <div class="dl"><div class="dl-dot" style="background:var(--google)"></div><div><div class="dl-lbl">Google Ads</div><div class="dl-val">${num(c.g.leads, 0)} leads</div><div class="dl-pct">${pct(c.pctResG)}</div></div></div>
-        <div class="dl"><div class="dl-dot" style="background:var(--meta)"></div><div><div class="dl-lbl">Meta Ads</div><div class="dl-val">${num(c.m.conversas, 0)} conv.</div><div class="dl-pct">${pct(c.pctResM)}</div></div></div>
-      </div>
-    </div>
-  </div>`;
+    </table></div>
+    ${notaCPL}
+    ${barras('Leads por mês', ordem.map(m => ({ nome: m.rotulo + (m.parcial ? ' (parcial)' : ''), valor: consolidar(m).leads })), 'var(--teal)', v => num(v, 1) + ' leads')}
+    ${barras('Investimento por mês', ordem.map(m => ({ nome: m.rotulo + (m.parcial ? ' (parcial)' : ''), valor: consolidar(m).investimento })), 'var(--google)', brl0)}`);
 
   /* ── Plano diário por especialidade ── */
   let plano = '';
   if (mes.planoDiario && mes.planoDiario.length) {
-    const tg = mes.planoDiario.reduce((a, p) => a + (p.google || 0), 0);
-    const tm = mes.planoDiario.reduce((a, p) => a + (p.meta || 0), 0);
-    plano = card('Investimento Diário por Especialidade', 'Orçamento diário planejado', `
+    const total = mes.planoDiario.reduce((a, p) => a + (p.investimentoDia || 0), 0);
+    plano = card('Investimento Diário por Especialidade', 'orçamento diário planejado', `
       <div class="tbl-scroll"><table>
-        <thead><tr><th>Especialidade</th><th class="r">Google Ads /dia</th><th class="r">Meta Ads /dia</th><th class="r">Total /dia</th></tr></thead>
-        <tbody>${mes.planoDiario.slice().sort((a, b) => ((b.google || 0) + (b.meta || 0)) - ((a.google || 0) + (a.meta || 0))).map(p => `<tr>
+        <thead><tr><th>Especialidade</th><th class="r">Investimento /dia</th><th class="r">% do plano</th></tr></thead>
+        <tbody>${mes.planoDiario.slice().sort((a, b) => (b.investimentoDia || 0) - (a.investimentoDia || 0)).map(p => `<tr>
           <td class="cam">${esc(p.especialidade)}</td>
-          <td class="r">${p.google ? brl(p.google) : '—'}</td>
-          <td class="r">${p.meta ? brl(p.meta) : '—'}</td>
-          <td class="r">${brl((p.google || 0) + (p.meta || 0))}</td>
+          <td class="r">${brl(p.investimentoDia || 0)}</td>
+          <td class="r">${pct(div(p.investimentoDia || 0, total) * 100)}</td>
         </tr>`).join('')}</tbody>
-        <tfoot><tr><td>Total Geral</td><td class="r">${brl(tg)}</td><td class="r">${brl(tm)}</td><td class="r">${brl(tg + tm)}</td></tr></tfoot>
+        <tfoot><tr><td>Total Geral</td><td class="r">${brl(total)}</td><td class="r">100%</td></tr></tfoot>
       </table></div>`);
   }
 
   /* ── Orçamento esperado x investido real ── */
   let orcamento = '';
-  if (mes.orcamento) {
-    const og = mes.orcamento.google || 0, om = mes.orcamento.meta || 0;
-    const linha = (nome, cor, real, prev) => {
-      const dif = prev - real;
-      const cls = dif >= 0 ? 'pos' : 'neg';
-      return `<tr>
-        <td><span class="plat-dot" style="background:${cor}"></span>${nome}</td>
-        <td class="r">${brl(real)}</td>
-        <td class="r">${brl(prev)}</td>
-        <td class="r ${cls}">${dif >= 0 ? '+' : '−'}${brl(Math.abs(dif))}</td>
-        <td class="r ${cls}">${pct(div(real, prev) * 100)}</td>
-      </tr>`;
-    };
-    const difT = (og + om) - c.investimento;
-    orcamento = card('Orçamento Esperado x Investido Real', mes.periodo + ` (${mes.dias} dias)`, `
+  if (typeof mes.orcamento === 'number') {
+    const dif = mes.orcamento - c.investimento;
+    const cls = dif >= 0 ? 'pos' : 'neg';
+    orcamento = card('Orçamento Esperado x Investido Real', `${mes.periodo} (${mes.dias} dias)`, `
       <div class="tbl-scroll"><table>
-        <thead><tr><th>Plataforma</th><th class="r">Investido Real</th><th class="r">Orçamento Esperado</th><th class="r">Diferença</th><th class="r">% Consumido</th></tr></thead>
-        <tbody>
-          ${linha('Google Ads', 'var(--google)', c.g.investimento, og)}
-          ${linha('Meta Ads', 'var(--meta)', c.m.investimento, om)}
-        </tbody>
-        <tfoot><tr>
-          <td>Total Geral</td>
+        <thead><tr><th>Período</th><th class="r">Investido Real</th><th class="r">Orçamento Esperado</th><th class="r">Diferença</th><th class="r">% Consumido</th></tr></thead>
+        <tbody><tr>
+          <td>${esc(mes.rotulo)}</td>
           <td class="r">${brl(c.investimento)}</td>
-          <td class="r">${brl(og + om)}</td>
-          <td class="r ${difT >= 0 ? 'pos' : 'neg'}">${difT >= 0 ? '+' : '−'}${brl(Math.abs(difT))}</td>
-          <td class="r ${difT >= 0 ? 'pos' : 'neg'}">${pct(div(c.investimento, og + om) * 100)}</td>
-        </tr></tfoot>
+          <td class="r">${brl(mes.orcamento)}</td>
+          <td class="r ${cls}">${dif >= 0 ? '+' : '−'}${brl(Math.abs(dif))}</td>
+          <td class="r ${cls}">${pct(div(c.investimento, mes.orcamento) * 100)}</td>
+        </tr></tbody>
       </table></div>`);
   }
 
   /* ── Projeção com base no ritmo diário ── */
-  const proj = d => `${brl0(c.investDia * d)}`;
-  const projNota = d => [
-    c.temGoogle ? `Google ${brl0(div(c.g.investimento, mes.dias) * d)}` : '',
-    c.temMeta   ? `Meta ${brl0(div(c.m.investimento, mes.dias) * d)}`   : ''
-  ].filter(Boolean).join(' · ');
-  const projecao = card('Projeção de Investimento', 'Com base no ritmo diário atual', `
+  const projecao = !mes.parcial ? '' : card('Projeção', 'com base no ritmo diário atual', `
     <div style="padding:20px"><div class="kpi-grid" style="margin-bottom:0">
-      ${kpi('tc', 'Próximos 7 dias', proj(7), projNota(7))}
-      ${kpi('tc', 'Próximos 15 dias', proj(15), projNota(15))}
-      ${kpi('tc', 'Próximos 30 dias', proj(30), projNota(30))}
+      ${kpi('tc', 'Próximos 7 dias', brl0(c.investDia * 7), `≈ ${num(c.leadsDia * 7, 0)} leads no ritmo atual`)}
+      ${kpi('tc', 'Próximos 15 dias', brl0(c.investDia * 15), `≈ ${num(c.leadsDia * 15, 0)} leads no ritmo atual`)}
+      ${kpi('tc', 'Próximos 30 dias', brl0(c.investDia * 30), `≈ ${num(c.leadsDia * 30, 0)} leads no ritmo atual`)}
     </div></div>`);
 
   return `<div class="wrap">
     <div class="ey">${mes.parcial ? 'Consolidado Parcial' : 'Consolidado'} · ${esc(mes.rotulo)}</div>
     <h1 class="ttl">Performance Geral</h1>
-    <p class="sub">Google Ads + Meta Ads · ${plural(nCampanhas, 'campanha', 'campanhas')} com veiculação · ${mes.dias} ${mes.parcial ? `dos ${mes.diasNoMes} dias do mês` : (mes.dias === 1 ? 'dia' : 'dias')}.</p>
+    <p class="sub">Google Ads · ${plural(nCampanhas, 'campanha', 'campanhas')} com veiculação · ${mes.dias} ${mes.parcial ? `dos ${mes.diasNoMes} dias do mês` : (mes.dias === 1 ? 'dia' : 'dias')}.</p>
     ${alertas(avisoParcial.concat(mes.alertas || []))}
     <div class="kpi-grid">
-      ${kpi('tc', 'Investimento Total', brl0(c.investimento), `Google + Meta Ads · ${mes.dias} dias`, `${brl(c.investDia)} / dia`)}
-      ${kpi('tc', 'Total de Resultados', num(c.resultados, 0), 'Leads + Conversas', `${num(c.resultadosDia, 1)} / dia`)}
-      ${kpi('tc', 'CPL / CPR Consolidado', cpx(c.investimento, c.resultados), c.resultados ? 'Custo médio por resultado' : 'Nenhuma conversão registrada no período', c.resultados ? `${num(c.resultados, 0)} resultados` : 'verificar rastreamento', c.resultados ? 'neu' : 'dn')}
+      ${kpi('tc', 'Investimento', brl0(c.investimento), `${mes.dias} dias de veiculação`, `${brl(c.investDia)} / dia`)}
+      ${kpi('tc', 'Total de Leads', num(c.leads, 0), 'Conversões no período', `${num(c.leadsDia, 1)} leads / dia`)}
+      ${kpi('tc', 'CPL Médio', cpx(c.investimento, c.leads), c.leads ? 'Custo por lead' : 'Nenhuma conversão registrada no período', c.leads ? `CTR ${pct(c.g.ctr)}` : 'verificar rastreamento', c.leads ? 'neu' : 'dn')}
     </div>
-    ${ritmo}${plataformas}${distribuicao}${plano}${orcamento}${projecao}${destaques(mes.destaques)}
+    ${evolucao}${plano}${orcamento}${projecao}${destaques(mes.destaques)}
   </div>`;
 }
 
-/* ═══════════════════════════════════════════════════════════════════════
-   SEÇÃO · GOOGLE ADS
-   ═══════════════════════════════════════════════════════════════════════ */
+
 function tabelaGoogle(cs, t) {
   return `<div class="tbl-scroll"><table>
     <thead><tr><th>Campanha</th><th class="r">Investimento</th><th class="r">Leads</th><th class="r">CPL</th><th class="r">CTR</th><th class="r">Impressões</th></tr></thead>
@@ -653,7 +555,7 @@ function tabelaGoogle(cs, t) {
       <td class="r">${num(c.impressoes)}</td>
     </tr>`).join('')}</tbody>
     <tfoot><tr>
-      <td>Total Google Ads</td>
+      <td>Total do mês</td>
       <td class="r">${brl(t.investimento)}</td>
       <td class="r">${num(t.leads, 1)} leads</td>
       <td class="r">CPL ${cpx(t.investimento, t.leads)}</td>
@@ -663,91 +565,40 @@ function tabelaGoogle(cs, t) {
   </table></div>`;
 }
 
-function secGoogle(mes) {
+function secCampanhas(mes) {
   const cs = (mes.google || []).slice().sort((a, b) => b.leads - a.leads);
   const t = somaGoogle(cs);
-  if (!cs.length) return vazio('Google Ads', 'Nenhuma campanha do Google Ads com veiculação neste recorte.');
+  if (!cs.length) return vazio('Campanhas', 'Nenhuma campanha com veiculação neste recorte.');
+
+  /* KPIs aqui destacam a leitura por campanha; os totais do mês estão na Visão Geral */
+  const MIN_LEADS = 3;                       // abaixo disso o CPL é ruído, não desempenho
+  const porCPL    = arr => arr.slice().sort((a, b) => div(a.investimento, a.leads) - div(b.investimento, b.leads))[0];
+  const comLeads  = cs.filter(c => c.leads > 0);
+  const maisLeads = cs[0];
+  const melhorCPL = porCPL(comLeads.filter(c => c.leads >= MIN_LEADS)) || porCPL(comLeads);
+  const maiorGasto = cs.slice().sort((a, b) => b.investimento - a.investimento)[0];
+
   return `<div class="wrap">
     <div class="ey" style="color:var(--google)">Google Ads · ${esc(mes.rotulo)}${mes.parcial ? ' (parcial)' : ''}</div>
     <h1 class="ttl">Campanhas de Pesquisa</h1>
     <p class="sub">${plural(cs.length, 'campanha ativa', 'campanhas ativas')} · ${mes.periodo} · dados do export do Google Ads.</p>
     <div class="kpi-grid">
-      ${kpi('go', 'Investimento', brl0(t.investimento), `${plural(cs.length, 'campanha', 'campanhas')} · ${mes.dias} dias`, `${brl(div(t.investimento, mes.dias))} / dia`)}
-      ${kpi('go', 'Total de Leads', num(t.leads, 0), 'Conversões no período', `${num(div(t.leads, mes.dias), 1)} leads / dia`)}
-      ${kpi('go', 'CPL Médio', cpx(t.investimento, t.leads), `CTR médio de ${pct(t.ctr)}`, `${num(t.cliques)} cliques`, t.leads ? 'neu' : 'dn')}
+      ${maisLeads && maisLeads.leads
+        ? kpi('go', 'Mais leads', num(maisLeads.leads, 0), esc(maisLeads.nome), `${pct(div(maisLeads.leads, t.leads) * 100)} dos leads do mês`)
+        : kpi('go', 'Mais leads', '—', 'Nenhuma campanha converteu no período')}
+      ${melhorCPL
+        ? kpi('go', 'Melhor CPL', cpx(melhorCPL.investimento, melhorCPL.leads), esc(melhorCPL.nome), `${num(melhorCPL.leads, 0)} leads`, 'up')
+        : kpi('go', 'Melhor CPL', '—', 'Sem conversões para comparar')}
+      ${kpi('go', 'Maior investimento', brl0(maiorGasto.investimento), esc(maiorGasto.nome), `${pct(div(maiorGasto.investimento, t.investimento) * 100)} da verba do mês`)}
     </div>
     ${card('Detalhamento por Campanha', 'ordenado por leads ↓',
       tabelaGoogle(cs, t) +
-      barras('Investimento por Campanha', cs.slice().sort((a, b) => b.investimento - a.investimento).map(c => ({ nome: c.nome, valor: c.investimento })), 'var(--google)', brl0) +
-      barras('Leads por Campanha', cs.map(c => ({ nome: c.nome, valor: c.leads })), 'var(--teal)', v => num(v, 0) + ' leads')
+      barras('Leads por Campanha', cs.filter(c => c.leads > 0).map(c => ({ nome: c.nome, valor: c.leads })), 'var(--teal)', v => num(v, 0) + ' leads') +
+      barras('Investimento por Campanha', cs.slice().sort((a, b) => b.investimento - a.investimento).map(c => ({ nome: c.nome, valor: c.investimento })), 'var(--google)', brl0)
     )}
   </div>`;
 }
 
-/* ═══════════════════════════════════════════════════════════════════════
-   SEÇÃO · META ADS
-   ═══════════════════════════════════════════════════════════════════════ */
-function tabelaMeta(cs, t) {
-  return `<div class="tbl-scroll"><table>
-    <thead><tr><th>Campanha</th><th class="r">Investimento</th><th class="r">Conversas</th><th class="r">CPR</th><th class="r">Impressões</th><th class="r">Alcance</th></tr></thead>
-    <tbody>${cs.map(c => `<tr>
-      <td class="cam">${esc(c.nome)}</td>
-      <td class="r">${brl(c.investimento)}</td>
-      <td class="r">${num(c.conversas)}</td>
-      <td class="r">${cpx(c.investimento, c.conversas)}</td>
-      <td class="r">${num(c.impressoes)}</td>
-      <td class="r">${num(c.alcance)}</td>
-    </tr>`).join('')}</tbody>
-    <tfoot><tr>
-      <td>Total Meta Ads</td>
-      <td class="r">${brl(t.investimento)}</td>
-      <td class="r">${num(t.conversas)} conversas</td>
-      <td class="r">CPR ${cpx(t.investimento, t.conversas)}</td>
-      <td class="r">${num(t.impressoes)}</td>
-      <td class="r">${num(t.alcance)}</td>
-    </tr></tfoot>
-  </table></div>`;
-}
-
-function secMeta(mes) {
-  const cs = (mes.meta || []).slice().sort((a, b) => b.conversas - a.conversas);
-  const t = somaMeta(cs);
-  if (!cs.length) return vazio('Meta Ads',
-    'Nenhuma campanha do Meta Ads neste recorte. A conta de anúncios da Mais Med ainda não está compartilhada com a BM que a Clintia usa — ver DASHBOARD.md.');
-  return `<div class="wrap">
-    <div class="ey" style="color:var(--meta)">Meta Ads · ${esc(mes.rotulo)}${mes.parcial ? ' (parcial)' : ''}</div>
-    <h1 class="ttl">Campanhas de Conversas</h1>
-    <p class="sub">${plural(cs.length, 'campanha', 'campanhas')} com veiculação · ${mes.periodo} · dados puxados direto da conta via Meta Ads MCP.</p>
-    <div class="kpi-grid">
-      ${kpi('mt', 'Investimento', brl0(t.investimento), `${plural(cs.length, 'campanha', 'campanhas')} · ${mes.dias} dias`, `${brl(div(t.investimento, mes.dias))} / dia`)}
-      ${kpi('mt', 'Total de Conversas', num(t.conversas), 'Conversas iniciadas', `${num(div(t.conversas, mes.dias), 1)} conversas / dia`)}
-      ${kpi('mt', 'CPR Médio', cpx(t.investimento, t.conversas), 'Custo por conversa', `${num(t.alcance)} de alcance`)}
-    </div>
-    ${card('Detalhamento por Campanha', 'ordenado por conversas ↓',
-      tabelaMeta(cs, t) +
-      barras('Investimento por Campanha', cs.slice().sort((a, b) => b.investimento - a.investimento).map(c => ({ nome: c.nome, valor: c.investimento })), 'var(--meta)', brl0) +
-      barras('Conversas por Campanha', cs.map(c => ({ nome: c.nome, valor: c.conversas })), 'var(--teal)', v => num(v) + ' conv.')
-    )}
-  </div>`;
-}
-
-/* ═══════════════════════════════════════════════════════════════════════
-   SEÇÃO · TODAS AS CAMPANHAS
-   ═══════════════════════════════════════════════════════════════════════ */
-function secTodas(mes) {
-  const g = (mes.google || []).slice().sort((a, b) => b.investimento - a.investimento);
-  const m = (mes.meta || []).slice().sort((a, b) => b.investimento - a.investimento);
-  const tg = somaGoogle(g), tm = somaMeta(m);
-  return `<div class="wrap">
-    <div class="ey">Google + Meta · ${esc(mes.rotulo)}${mes.parcial ? ' (parcial)' : ''}</div>
-    <h1 class="ttl">Todas as Campanhas Ativas</h1>
-    <p class="sub">${plural(g.length + m.length, 'campanha', 'campanhas')} com veiculação em ${mes.periodo}.</p>
-    ${g.length ? `<div class="ey" style="color:var(--google);margin-bottom:12px">Google Ads · ${plural(g.length, 'campanha', 'campanhas')}</div>
-      <div class="tcard" style="margin-bottom:28px">${tabelaGoogle(g, tg)}</div>` : ''}
-    ${m.length ? `<div class="ey" style="color:var(--meta);margin-bottom:12px">Meta Ads · ${plural(m.length, 'campanha', 'campanhas')}</div>
-      <div class="tcard">${tabelaMeta(m, tm)}</div>` : ''}
-  </div>`;
-}
 
 /* ═══════════════════════════════════════════════════════════════════════
    SEÇÃO · PALAVRAS-CHAVE (Google Ads)
@@ -858,16 +709,12 @@ function vazio(titulo, texto) {
    ESTADO INICIAL — enquanto não há mês carregado
    ═══════════════════════════════════════════════════════════════════════ */
 const PENDENCIAS = [
-  { st: 'block', t: 'Conta de anúncios do Meta Ads da Mais Med',
-    d: 'É preciso o ID da conta de anúncios (<code>act_…</code>) e que ela esteja compartilhada com a BM que a Clintia usa. Hoje a conexão do Meta Ads da Clintia enxerga 108 contas e nenhuma é da Mais Med — sem esse compartilhamento não há como puxar investimento, conversas, impressões e alcance.' },
-  { st: 'block', t: 'Conta do Google Ads da Mais Med',
-    d: 'É preciso o ID da conta (CID, formato <code>000-000-0000</code>) e o export mensal da aba <strong>Campanhas</strong> com as colunas Custo, Impr., Cliques e Conversões — é assim que o relatório da Alpha é alimentado. Alternativa: acesso de leitura à conta para exportar direto.' },
-  { st: 'ok', t: 'Definição do que conta como resultado',
-    d: 'No modelo da Alpha, Google = <strong>leads</strong> (conversões) e Meta = <strong>conversas iniciadas</strong>. Confirmar se vale o mesmo para a Mais Med, já que aqui o canal de marcação é o WhatsApp.' },
-  { st: 'ok', t: 'Recorte e periodicidade',
-    d: 'Um bloco por mês, com o mês corrente marcado como parcial. Definir a partir de qual mês o relatório começa — a primeira campanha (pediatria, Cláusula 6) é o marco zero.' },
-  { st: 'ok', t: 'Orçamento planejado por especialidade',
-    d: 'Verba diária prevista por especialidade em cada plataforma. Alimenta os blocos <em>Investimento Diário por Especialidade</em> e <em>Orçamento Esperado x Investido Real</em>.' },
+  { st: 'block', t: 'Export do Google Ads',
+    d: 'A base por <strong>dia + palavra-chave</strong> exportada da conta, com as colunas Custo, Impr., Cliques e Conversões. É a única fonte do relatório — a conta roda apenas Google Ads.' },
+  { st: 'ok', t: 'Definição do que conta como lead',
+    d: 'As campanhas são de pesquisa otimizadas para captação de leads. Confirmar qual ação está marcada como conversão na conta (clique-para-WhatsApp, ligação, formulário) para que o rótulo "lead" no relatório corresponda ao que o cliente entende por lead.' },
+  { st: 'ok', t: 'Orçamento planejado',
+    d: 'Verba prevista no período e, se houver, o plano diário por especialidade. Alimenta os blocos <em>Orçamento Esperado x Investido Real</em> e <em>Investimento Diário por Especialidade</em>; sem eles, os blocos não são renderizados.' },
   { st: 'ok', t: 'Publicação',
     d: 'Deploy na Vercel a partir deste repositório, servido em <code>/dashboard</code>, com <code>X-Robots-Tag: noindex</code> já configurado no <code>vercel.json</code>.' }
 ];
@@ -875,12 +722,12 @@ const PENDENCIAS = [
 function telaSetup() {
   return `<div class="hdr"><div class="hdr-row">
       <div class="brand"><div class="brand-dot"></div><span class="brand-name">${DADOS.cliente}</span></div>
-      <span class="period-chip">Aguardando primeiro recorte</span>
+      <span class="period-chip">Aguardando export</span>
     </div></div>
     <div class="setup">
-      <div class="ey">Relatório de Performance · Google Ads + Meta Ads</div>
-      <h1>Dashboard pronto — falta ligar as contas</h1>
-      <p class="lead">A estrutura do relatório está construída e espelha a da Alpha Policlínica: visão consolidada, aba por plataforma e lista completa de campanhas, com seletor de mês. Todos os números — CPL, CPR, CTR, ritmo diário, projeções e percentuais — são calculados sozinhos. Falta apenas o acesso aos dados das contas da Mais Med.</p>
+      <div class="ey">Relatório de Performance · Google Ads</div>
+      <h1>Dashboard pronto — falta carregar o export</h1>
+      <p class="lead">A estrutura do relatório está construída e espelha a da Alpha Policlínica: visão consolidada, detalhamento por campanha e por palavra-chave, com seletor de mês. Todos os números — CPL, CTR, ritmo diário, projeções e percentuais — são calculados sozinhos. Falta apenas carregar o export da conta.</p>
       ${PENDENCIAS.map((p, i) => `<div class="step">
         <div class="step-num">${i + 1}</div>
         <div>
@@ -903,11 +750,9 @@ function telaSetup() {
    MONTAGEM E NAVEGAÇÃO
    ═══════════════════════════════════════════════════════════════════════ */
 const ABAS = [
-  { id: 'geral',  rotulo: 'Visão Geral',        render: secGeral },
-  { id: 'google', rotulo: 'Google Ads',         render: secGoogle },
-  { id: 'meta',   rotulo: 'Meta Ads',           render: secMeta },
-  { id: 'chaves', rotulo: 'Palavras-chave',     render: secKeywords, quando: m => (m.keywords || []).length },
-  { id: 'todas',  rotulo: 'Todas as Campanhas', render: secTodas }
+  { id: 'geral',      rotulo: 'Visão Geral',    render: secGeral },
+  { id: 'campanhas',  rotulo: 'Campanhas',      render: secCampanhas },
+  { id: 'chaves',     rotulo: 'Palavras-chave', render: secKeywords, quando: m => (m.keywords || []).length }
 ];
 
 const abasDe = mes => ABAS.filter(a => !a.quando || a.quando(mes));

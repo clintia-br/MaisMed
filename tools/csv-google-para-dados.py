@@ -15,8 +15,8 @@ Formato de entrada esperado (export "Base de Dados - Relatório Ads"):
              Pesquisar tipo de correspondência de palavra-chave, Impr.,
              Cliques, CTR, Código da moeda, CPC méd., Custo, Conversões, ...
 
-Os dados de Meta Ads não vêm daqui — são acrescentados ao objeto do mês
-separadamente, na chave `meta`.
+A conta roda apenas Google Ads: campanhas de pesquisa otimizadas para
+captação de leads.
 """
 import csv
 import calendar
@@ -122,7 +122,6 @@ def montar(meses):
         bloco['diasNoMes'] = dias_no_mes
         bloco['parcial']   = chave == mais_recente and int(ultimo[8:]) < dias_no_mes
         bloco['google']    = campanhas
-        bloco['meta']      = []
         bloco['keywords']  = keywords
 
         # investimento sem nenhuma conversão registrada é quase sempre falta de
@@ -167,7 +166,6 @@ def js(blocos):
         for c in b['google']:
             saida.append(registro(c, '        ') + ',')
         saida.append('      ],')
-        saida.append('      meta: [],')
         saida.append('      keywords: [')
         for k in b['keywords']:
             saida.append(registro(k, '        ') + ',')

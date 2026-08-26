@@ -3,7 +3,7 @@
 Dois documentos servidos pelo mesmo projeto:
 
 - **`/`** — DPV (Dossiê de Posicionamento e Vendas), entregável da Cláusula 4 do contrato de implantação PROClip.
-- **`/dashboard`** — Relatório de performance de Google Ads + Meta Ads, no modelo do relatório da Alpha Policlínica. Ver [DASHBOARD.md](DASHBOARD.md) para o que é necessário para alimentá-lo e como carregar cada mês.
+- **`/dashboard`** — Relatório de performance do Google Ads, no modelo do relatório da Alpha Policlínica. Ver [DASHBOARD.md](DASHBOARD.md) para como atualizar os dados a cada fechamento.
 
 **Cliente:** Dr. Cauê Araujo Braz · Clínica Mais Med
 **Operador:** Clintia
@@ -26,7 +26,7 @@ Não há dependências, não há etapa de build. A Vercel serve o `index.html` d
 ```
 .
 ├── index.html       # DPV completo (5 abas, navegação SPA)
-├── dashboard.html   # Relatório de performance Google Ads + Meta Ads
+├── dashboard.html   # Relatório de performance do Google Ads
 ├── vercel.json      # headers de segurança + noindex
 ├── DASHBOARD.md     # como alimentar o relatório de performance
 ├── tools/
