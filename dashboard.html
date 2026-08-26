@@ -123,6 +123,7 @@ tfoot td { padding: 12px 20px; font-size: 11px; font-weight: 600; background: va
 tfoot td:first-child { font-family: 'Inter', sans-serif; font-size: 12px; }
 td.pos { color: var(--green); }
 td.neg { color: var(--red); }
+td.amber-txt { color: var(--amber); }
 
 /* ── BARRAS ── */
 .chart-ttl { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .09em; color: var(--t3); padding: 15px 20px 10px; border-top: 1px solid var(--border); }
@@ -190,14 +191,15 @@ td.neg { color: var(--red); }
      dias:      25,                       // dias com veiculação no recorte
      diasNoMes: 31,                       // total de dias do mês
      parcial:   true,                     // true = mês em andamento
-     orcamento: 3000,                     // opcional: verba prevista no recorte
-     google:    [ { nome, investimento, impressoes, cliques, leads } ],
+     google:    [ { nome, investimento, impressoes, cliques, leads, dias } ],
      keywords:  [ { termo, campanha, correspondencia, investimento,
                     impressoes, cliques, leads } ],                 // opcional
-     planoDiario: [ { especialidade, investimentoDia } ],           // opcional
      alertas:   [ { tipo:'amber'|'teal', icone, titulo, texto } ],  // opcional
      destaques: [ { icone, titulo, texto } ]                        // opcional
    }
+
+   O orçamento não fica aqui — mora em ORCAMENTO_DIARIO, logo abaixo, porque
+   este bloco é sobrescrito pelo conversor a cada fechamento.
    ═══════════════════════════════════════════════════════════════════════ */
 
 const DADOS = {
@@ -211,10 +213,10 @@ const DADOS = {
       periodo: "01/08 – 25/08",
       dias: 25, diasNoMes: 31, parcial: true,
       google: [
-        { nome: "[Clínico Geral]", investimento: 251.65, impressoes: 1029, cliques: 161, leads: 53.0 },
-        { nome: "[Pediatria]", investimento: 251.18, impressoes: 1279, cliques: 161, leads: 51.0 },
-        { nome: "[Ultrassom]", investimento: 178.73, impressoes: 213, cliques: 27, leads: 9.0 },
-        { nome: "[Marca]", investimento: 159.5, impressoes: 180, cliques: 55, leads: 11.0 },
+        { nome: "[Clínico Geral]", investimento: 251.65, impressoes: 1029, cliques: 161, leads: 53.0, dias: 25 },
+        { nome: "[Pediatria]", investimento: 251.18, impressoes: 1279, cliques: 161, leads: 51.0, dias: 25 },
+        { nome: "[Ultrassom]", investimento: 178.73, impressoes: 213, cliques: 27, leads: 9.0, dias: 13 },
+        { nome: "[Marca]", investimento: 159.5, impressoes: 180, cliques: 55, leads: 11.0, dias: 23 },
       ],
       keywords: [
         { termo: "clínica médica ipiaú", campanha: "[Pediatria]", correspondencia: "Correspondência de frase", investimento: 231.5, impressoes: 1032, cliques: 148, leads: 50.0 },
@@ -237,10 +239,10 @@ const DADOS = {
       periodo: "01/07 – 31/07",
       dias: 31, diasNoMes: 31, parcial: false,
       google: [
-        { nome: "[Clínico Geral]", investimento: 607.24, impressoes: 781, cliques: 92, leads: 27.33 },
-        { nome: "[Ultrassom]", investimento: 437.44, impressoes: 551, cliques: 83, leads: 26.33 },
-        { nome: "[Pediatria]", investimento: 409.21, impressoes: 879, cliques: 82, leads: 21.5 },
-        { nome: "[Marca]", investimento: 223.85, impressoes: 297, cliques: 62, leads: 9.83 },
+        { nome: "[Clínico Geral]", investimento: 607.24, impressoes: 781, cliques: 92, leads: 27.33, dias: 25 },
+        { nome: "[Ultrassom]", investimento: 437.44, impressoes: 551, cliques: 83, leads: 26.33, dias: 23 },
+        { nome: "[Pediatria]", investimento: 409.21, impressoes: 879, cliques: 82, leads: 21.5, dias: 31 },
+        { nome: "[Marca]", investimento: 223.85, impressoes: 297, cliques: 62, leads: 9.83, dias: 27 },
       ],
       keywords: [
         { termo: "med mais consultas", campanha: "[Clínico Geral]", correspondencia: "Correspondência ampla", investimento: 345.85, impressoes: 474, cliques: 44, leads: 10.5 },
@@ -261,8 +263,8 @@ const DADOS = {
       periodo: "04/06 – 30/06",
       dias: 26, diasNoMes: 30, parcial: false,
       google: [
-        { nome: "[Marca]", investimento: 222.51, impressoes: 311, cliques: 50, leads: 10.0 },
-        { nome: "[Pediatria]", investimento: 54.97, impressoes: 98, cliques: 9, leads: 2.0 },
+        { nome: "[Marca]", investimento: 222.51, impressoes: 311, cliques: 50, leads: 10.0, dias: 26 },
+        { nome: "[Pediatria]", investimento: 54.97, impressoes: 98, cliques: 9, leads: 2.0, dias: 7 },
       ],
       keywords: [
         { termo: "Mais Med Ipiaú", campanha: "[Marca]", correspondencia: "Correspondência de frase", investimento: 143.21, impressoes: 164, cliques: 31, leads: 9.0 },
@@ -279,7 +281,7 @@ const DADOS = {
         { tipo: "amber", icone: "🏷️", titulo: "Período sem conversões registradas", texto: "Houve investimento (R$ 191,18) e cliques, mas nenhuma conversão foi contabilizada. Confirmar se a tag de conversão já estava instalada neste período — sem ela, o Google registra o clique mas não o contato gerado, e o CPL fica indisponível." },
       ],
       google: [
-        { nome: "PRIMEIRA CAMPANHA", investimento: 191.18, impressoes: 929, cliques: 105, leads: 0.0 },
+        { nome: "PRIMEIRA CAMPANHA", investimento: 191.18, impressoes: 929, cliques: 105, leads: 0.0, dias: 13 },
       ],
       keywords: [
         { termo: "clínica médica", campanha: "PRIMEIRA CAMPANHA", correspondencia: "Correspondência ampla", investimento: 91.9, impressoes: 480, cliques: 59, leads: 0.0 },
@@ -307,7 +309,7 @@ const DADOS = {
         { tipo: "amber", icone: "🏷️", titulo: "Período sem conversões registradas", texto: "Houve investimento (R$ 229,12) e cliques, mas nenhuma conversão foi contabilizada. Confirmar se a tag de conversão já estava instalada neste período — sem ela, o Google registra o clique mas não o contato gerado, e o CPL fica indisponível." },
       ],
       google: [
-        { nome: "PRIMEIRA CAMPANHA", investimento: 229.12, impressoes: 1153, cliques: 125, leads: 0.0 },
+        { nome: "PRIMEIRA CAMPANHA", investimento: 229.12, impressoes: 1153, cliques: 125, leads: 0.0, dias: 23 },
       ],
       keywords: [
         { termo: "clínica médica", campanha: "PRIMEIRA CAMPANHA", correspondencia: "Correspondência ampla", investimento: 182.65, impressoes: 767, cliques: 97, leads: 0.0 },
@@ -331,6 +333,25 @@ const DADOS = {
       ]
     },
   ]
+};
+
+/* ═══════════════════════════════════════════════════════════════════════
+   ORÇAMENTO DIÁRIO POR CAMPANHA
+
+   Fica fora de DADOS.meses de propósito: aquele bloco é sobrescrito toda vez
+   que o conversor roda, e o orçamento não vem no export do Google Ads.
+
+   Chaveado por mês porque a verba muda ao longo do tempo — o plano atual não
+   descreve o que estava valendo em julho. Mês sem entrada aqui simplesmente
+   não renderiza o bloco de orçamento.
+   ═══════════════════════════════════════════════════════════════════════ */
+const ORCAMENTO_DIARIO = {
+  'agosto-2026': {
+    '[Marca]':         6.00,
+    '[Pediatria]':    10.00,
+    '[Ultrassom]':    20.00,
+    '[Clínico Geral]': 10.00
+  }
 };
 
 /* ═══════════════════════════════════════════════════════════════════════
@@ -486,38 +507,60 @@ function secGeral(mes) {
     ${barras('Leads por mês', ordem.map(m => ({ nome: m.rotulo + (m.parcial ? ' (parcial)' : ''), valor: consolidar(m).leads })), 'var(--teal)', v => num(v, 1) + ' leads')}
     ${barras('Investimento por mês', ordem.map(m => ({ nome: m.rotulo + (m.parcial ? ' (parcial)' : ''), valor: consolidar(m).investimento })), 'var(--google)', brl0)}`);
 
-  /* ── Plano diário por especialidade ── */
-  let plano = '';
-  if (mes.planoDiario && mes.planoDiario.length) {
-    const total = mes.planoDiario.reduce((a, p) => a + (p.investimentoDia || 0), 0);
-    plano = card('Investimento Diário por Especialidade', 'orçamento diário planejado', `
-      <div class="tbl-scroll"><table>
-        <thead><tr><th>Especialidade</th><th class="r">Investimento /dia</th><th class="r">% do plano</th></tr></thead>
-        <tbody>${mes.planoDiario.slice().sort((a, b) => (b.investimentoDia || 0) - (a.investimentoDia || 0)).map(p => `<tr>
-          <td class="cam">${esc(p.especialidade)}</td>
-          <td class="r">${brl(p.investimentoDia || 0)}</td>
-          <td class="r">${pct(div(p.investimentoDia || 0, total) * 100)}</td>
-        </tr>`).join('')}</tbody>
-        <tfoot><tr><td>Total Geral</td><td class="r">${brl(total)}</td><td class="r">100%</td></tr></tfoot>
-      </table></div>`);
-  }
-
-  /* ── Orçamento esperado x investido real ── */
+  /* ── Orçamento diário x investido real, por campanha ── */
+  const plano = ORCAMENTO_DIARIO[mes.id];
   let orcamento = '';
-  if (typeof mes.orcamento === 'number') {
-    const dif = mes.orcamento - c.investimento;
-    const cls = dif >= 0 ? 'pos' : 'neg';
-    orcamento = card('Orçamento Esperado x Investido Real', `${mes.periodo} (${mes.dias} dias)`, `
+  if (plano) {
+    const linhas = (mes.google || [])
+      .map(camp => {
+        const orcDia = plano[camp.nome];
+        const dias   = camp.dias || mes.dias;
+        return orcDia == null ? null : { camp, orcDia, dias, previsto: orcDia * dias };
+      })
+      .filter(Boolean)
+      .sort((a, b) => b.previsto - a.previsto);
+
+    /* faixas de consumo: perto do previsto é saudável; muito acima estoura a
+       verba, muito abaixo significa verba parada que não virou lead */
+    const classe = p => p >= 105 ? 'neg' : (p >= 90 ? 'pos' : 'amber-txt');
+    const tOrcDia   = linhas.reduce((a, l) => a + l.orcDia, 0);
+    const tPrevisto = linhas.reduce((a, l) => a + l.previsto, 0);
+    const tReal     = linhas.reduce((a, l) => a + l.camp.investimento, 0);
+
+    /* campanha que veiculou menos dias que o período não estourou nem economizou — ficou parada */
+    const pausadas = linhas.filter(l => l.dias < mes.dias);
+    const nota = pausadas.length ? `<div style="padding:12px 20px;border-top:1px solid var(--border);font-size:11px;color:var(--t2);line-height:1.6">
+        ${pausadas.map(l => `<strong style="color:var(--text)">${esc(l.camp.nome)}</strong> veiculou ${l.dias} dos ${mes.dias} dias do período`).join('; ')}.
+        O orçamento previsto considera apenas os dias em que a campanha esteve no ar.
+      </div>` : '';
+
+    orcamento = card('Orçamento Diário x Investido Real', `${mes.periodo} · ${brl(tOrcDia)} / dia no plano`, `
       <div class="tbl-scroll"><table>
-        <thead><tr><th>Período</th><th class="r">Investido Real</th><th class="r">Orçamento Esperado</th><th class="r">Diferença</th><th class="r">% Consumido</th></tr></thead>
-        <tbody><tr>
-          <td>${esc(mes.rotulo)}</td>
-          <td class="r">${brl(c.investimento)}</td>
-          <td class="r">${brl(mes.orcamento)}</td>
-          <td class="r ${cls}">${dif >= 0 ? '+' : '−'}${brl(Math.abs(dif))}</td>
-          <td class="r ${cls}">${pct(div(c.investimento, mes.orcamento) * 100)}</td>
-        </tr></tbody>
-      </table></div>`);
+        <thead><tr>
+          <th>Campanha</th><th class="r">Orç. / dia</th><th class="r">Dias</th>
+          <th class="r">Previsto</th><th class="r">Investido</th><th class="r">% consumido</th>
+        </tr></thead>
+        <tbody>${linhas.map(l => {
+          const p = div(l.camp.investimento, l.previsto) * 100;
+          return `<tr>
+            <td class="cam" style="color:var(--text)">${esc(l.camp.nome)}</td>
+            <td class="r">${brl(l.orcDia)}</td>
+            <td class="r"${l.dias < mes.dias ? ' style="color:var(--amber)"' : ''}>${l.dias}</td>
+            <td class="r">${brl(l.previsto)}</td>
+            <td class="r">${brl(l.camp.investimento)}</td>
+            <td class="r ${classe(p)}">${pct(p)}</td>
+          </tr>`;
+        }).join('')}</tbody>
+        <tfoot><tr>
+          <td>Total</td>
+          <td class="r">${brl(tOrcDia)}</td>
+          <td class="r">—</td>
+          <td class="r">${brl(tPrevisto)}</td>
+          <td class="r">${brl(tReal)}</td>
+          <td class="r ${classe(div(tReal, tPrevisto) * 100)}">${pct(div(tReal, tPrevisto) * 100)}</td>
+        </tr></tfoot>
+      </table></div>
+      ${nota}`);
   }
 
   /* ── Projeção com base no ritmo diário ── */
@@ -538,7 +581,7 @@ function secGeral(mes) {
       ${kpi('tc', 'Total de Leads', num(c.leads, 0), 'Conversões no período', `${num(c.leadsDia, 1)} leads / dia`)}
       ${kpi('tc', 'CPL Médio', cpx(c.investimento, c.leads), c.leads ? 'Custo por lead' : 'Nenhuma conversão registrada no período', c.leads ? `CTR ${pct(c.g.ctr)}` : 'verificar rastreamento', c.leads ? 'neu' : 'dn')}
     </div>
-    ${evolucao}${plano}${orcamento}${projecao}${destaques(mes.destaques)}
+    ${evolucao}${orcamento}${projecao}${destaques(mes.destaques)}
   </div>`;
 }
 

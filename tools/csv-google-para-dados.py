@@ -59,7 +59,7 @@ def agregar(linhas):
         chave = dia[:7]
         m = meses.setdefault(chave, {
             'dias': set(),
-            'campanhas': defaultdict(lambda: dict(investimento=0.0, impressoes=0, cliques=0, leads=0)),
+            'campanhas': defaultdict(lambda: dict(investimento=0.0, impressoes=0, cliques=0, leads=0, dias=set())),
             'keywords': defaultdict(lambda: dict(investimento=0.0, impressoes=0, cliques=0, leads=0,
                                                  campanha='', correspondencia='')),
         })
@@ -71,6 +71,7 @@ def agregar(linhas):
         conv  = numero(r['Conversões'])
 
         c = m['campanhas'][r['Campanha']]
+        c['dias'].add(dia)
         c['investimento'] += custo
         c['impressoes']   += impr
         c['cliques']      += cli
@@ -100,7 +101,12 @@ def montar(meses):
         dias_no_mes = calendar.monthrange(ano, mes_num)[1]
 
         campanhas = [
-            dict(nome=nome, **{k: round(v, 2) if isinstance(v, float) else v for k, v in vals.items()})
+            dict(nome=nome,
+                 investimento=round(vals['investimento'], 2),
+                 impressoes=vals['impressoes'],
+                 cliques=vals['cliques'],
+                 leads=round(vals['leads'], 2),
+                 dias=len(vals['dias']))
             for nome, vals in sorted(m['campanhas'].items(), key=lambda x: -x[1]['investimento'])
         ]
         keywords = [

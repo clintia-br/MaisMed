@@ -41,11 +41,25 @@ marcada como conversão na conta — clique-para-WhatsApp, ligação ou formulá
 para que o rótulo "lead" no relatório corresponda ao que o cliente entende por
 lead. O canal de marcação da clínica é o WhatsApp.
 
-### 3. Orçamento planejado — **opcional**
+### 3. Orçamento diário — **carregado para agosto**
 
-Verba prevista por período e, se houver, o plano diário por especialidade.
-Alimenta os blocos *Orçamento Esperado x Investido Real* e *Investimento Diário
-por Especialidade*. Sem eles, os blocos simplesmente não são renderizados.
+Plano vigente, R$ 46,00/dia no total:
+
+| Campanha | Orçamento / dia |
+|---|---|
+| `[Ultrassom]` | R$ 20,00 |
+| `[Pediatria]` | R$ 10,00 |
+| `[Clínico Geral]` | R$ 10,00 |
+| `[Marca]` | R$ 6,00 |
+
+Aplicado **só a agosto**, de propósito. Esse plano descreve a verba atual e não
+o que estava valendo antes: julho consumiu R$ 54,12/dia e junho R$ 10,67/dia,
+então aplicá-lo retroativamente produziria um "estouramos 142% do orçamento" que
+nunca aconteceu. Para carregar os meses anteriores, é preciso a verba que estava
+em vigor em cada um.
+
+Quando a verba mudar, acrescente uma entrada nova em `ORCAMENTO_DIARIO` no lugar
+de editar a de agosto — o histórico de cada mês fica preservado.
 
 ### 4. Publicação — **pronto**
 
@@ -87,7 +101,7 @@ conversão.
   parcial:   true,                 // só o mês mais recente do export
 
   google: [
-    { nome: '[Pediatria]', investimento: 251.18, impressoes: 1279, cliques: 161, leads: 51 }
+    { nome: '[Pediatria]', investimento: 251.18, impressoes: 1279, cliques: 161, leads: 51, dias: 25 }
   ],
 
   keywords: [
@@ -97,15 +111,38 @@ conversão.
 }
 ```
 
-### Campos opcionais
+### Orçamento
+
+O orçamento não vem no export do Google Ads, então mora em `ORCAMENTO_DIARIO`,
+**fora** de `DADOS.meses` — aquele bloco é sobrescrito toda vez que o conversor
+roda, e o orçamento sobreviveria a nada ali dentro.
+
+```js
+const ORCAMENTO_DIARIO = {
+  'agosto-2026': {
+    '[Marca]':          6.00,
+    '[Pediatria]':     10.00,
+    '[Ultrassom]':     20.00,
+    '[Clínico Geral]': 10.00
+  }
+};
+```
+
+Chaveado pelo `id` do mês, porque a verba muda ao longo do tempo. Mês sem
+entrada não renderiza o bloco de orçamento — nenhum número é inventado.
+
+O previsto de cada campanha é `orçamento/dia × dias em que a campanha veiculou`,
+não × dias do mês: uma campanha pausada no meio do período não estourou nem
+economizou verba, ficou parada, e o relatório diz isso numa nota abaixo da
+tabela. O nome da campanha precisa bater exatamente com o que vem do export.
+
+### Outros campos opcionais
 
 Acrescentados à mão em qualquer mês:
 
 ```js
-orcamento:   3000,                                                 // verba prevista no recorte
-planoDiario: [ { especialidade: 'Pediatria', investimentoDia: 100 } ],
-alertas:     [ { tipo: 'amber', icone: '⚠️', titulo: '…', texto: '…' } ],
-destaques:   [ { icone: '📈', titulo: '…', texto: '…' } ]
+alertas:   [ { tipo: 'amber', icone: '⚠️', titulo: '…', texto: '…' } ],
+destaques: [ { icone: '📈', titulo: '…', texto: '…' } ]
 ```
 
 ### De onde vem cada campo
@@ -116,13 +153,15 @@ destaques:   [ { icone: '📈', titulo: '…', texto: '…' } ]
 | `impressoes` | Impr. |
 | `cliques` | Cliques |
 | `leads` | Conversões |
+| `dias` | contagem de dias distintos em que a campanha aparece no export |
 
 ### O que é calculado sozinho
 
 Não preencha à mão: CPL, CTR, totais por campanha e por mês, acumulado,
 investimento/dia, leads/dia, projeção de investimento e de leads, percentuais,
 resumo por tipo de correspondência, detecção de palavras-chave duplicadas entre
-campanhas e o CPL acumulado ajustado para períodos sem rastreamento. Tudo deriva
+campanhas, orçamento previsto e % consumido, e o CPL acumulado ajustado para
+períodos sem rastreamento. Tudo deriva
 dos campos acima.
 
 ---
@@ -132,8 +171,8 @@ dos campos acima.
 Um seletor de mês no topo e três abas:
 
 1. **Visão Geral** — KPIs do mês (investimento, leads, CPL), evolução mês a mês
-   com ritmo diário e acumulado, orçamento planejado quando informado, e
-   projeção (só no mês em andamento).
+   com ritmo diário e acumulado, orçamento diário x investido real por campanha
+   quando informado, e projeção (só no mês em andamento).
 2. **Campanhas** — leitura por campanha: qual trouxe mais leads, qual tem o
    melhor CPL, qual consome mais verba, tabela completa e barras de leads e
    investimento.
@@ -149,7 +188,9 @@ Regras de exibição que o relatório aplica sozinho:
   campanha de lead único;
 - só o mês mais recente do export é tratado como em andamento — nos anteriores,
   uma janela curta significa veiculação encerrada, não mês aberto;
-- projeção aparece apenas em mês em andamento.
+- projeção aparece apenas em mês em andamento;
+- consumo de orçamento é colorido por faixa — verde entre 90% e 105%, vermelho
+  acima disso, âmbar abaixo, porque verba não consumida também é problema.
 
 ---
 
