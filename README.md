@@ -1,6 +1,9 @@
-# DPV — Clínica Mais Med
+# Clínica Mais Med — Entregáveis Clintia
 
-Dossiê de Posicionamento e Vendas da Clínica Mais Med (Ipiaú/BA), entregável da Cláusula 4 do contrato de implantação PROClip.
+Dois documentos servidos pelo mesmo projeto:
+
+- **`/`** — DPV (Dossiê de Posicionamento e Vendas), entregável da Cláusula 4 do contrato de implantação PROClip.
+- **`/dashboard`** — Relatório de performance do Google Ads, no modelo do relatório da Alpha Policlínica. Ver [DASHBOARD.md](DASHBOARD.md) para como atualizar os dados a cada fechamento.
 
 **Cliente:** Dr. Cauê Araujo Braz · Clínica Mais Med
 **Operador:** Clintia
@@ -23,10 +26,17 @@ Não há dependências, não há etapa de build. A Vercel serve o `index.html` d
 ```
 .
 ├── index.html       # DPV completo (5 abas, navegação SPA)
+├── dashboard.html   # Relatório de performance do Google Ads
 ├── vercel.json      # headers de segurança + noindex
+├── DASHBOARD.md     # como alimentar o relatório de performance
+├── tools/
+│   └── csv-google-para-dados.py   # export do Google Ads → dados do relatório
 ├── .gitignore
 └── README.md
 ```
+
+Duas páginas independentes no mesmo deploy: o DPV em `/` e o relatório de
+performance em `/dashboard`. Uma não depende da outra.
 
 ---
 

@@ -1,0 +1,845 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+<meta name="robots" content="noindex, nofollow" />
+<title>Relatório de Performance — Clínica Mais Med</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg:        #0a0a0a;
+  --s1:        #141414;
+  --s2:        #1c1c1c;
+  --s3:        #252525;
+  --border:    rgba(255,255,255,0.06);
+  --border2:   rgba(255,255,255,0.11);
+  --text:      #f5f5f5;
+  --t2:        #a3a3a3;
+  --t3:        #6b6b6b;
+  --teal:      #0E9F8E;
+  --teal-l:    #22c9b4;
+  --teal-bg:   rgba(14,159,142,.12);
+  --google:    #4285F4;
+  --google-bg: rgba(66,133,244,.1);
+  --green:     #22c55e;
+  --amber:     #f59e0b;
+  --amber-bg:  rgba(245,158,11,.1);
+  --red:       #ef4444;
+  --r:         10px;
+  --r-sm:      6px;
+}
+
+html { scroll-behavior: smooth; }
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  background: var(--bg); color: var(--text);
+  -webkit-font-smoothing: antialiased;
+  font-size: 14px; line-height: 1.55;
+}
+
+/* ── SELETOR DE MÊS ── */
+.switch { background: var(--s1); border-bottom: 1px solid var(--border); }
+.switch-inner { max-width: 1140px; margin: 0 auto; padding: 12px 24px; display: flex; gap: 8px; flex-wrap: wrap; }
+.switch-btn {
+  background: none; border: 1px solid var(--border2); color: var(--t2);
+  font-family: inherit; font-size: 12px; font-weight: 600; letter-spacing: .01em;
+  padding: 7px 15px; border-radius: 999px; cursor: pointer; transition: all .2s;
+}
+.switch-btn:hover { color: var(--text); border-color: var(--teal-l); }
+.switch-btn.active { background: var(--teal); color: #fff; border-color: var(--teal); }
+
+/* ── HEADER ── */
+.hdr { background: var(--s1); border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 100; }
+.hdr-row { max-width: 1140px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; padding: 13px 24px; gap: 12px; flex-wrap: wrap; }
+.brand { display: flex; align-items: center; gap: 9px; }
+.brand-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--teal); box-shadow: 0 0 12px var(--teal); }
+.brand-name { font-size: 14px; font-weight: 600; letter-spacing: -.01em; }
+.period-chip {
+  font-size: 11px; font-weight: 500; color: var(--teal-l);
+  background: var(--teal-bg); border: 1px solid rgba(14,159,142,.25);
+  padding: 5px 11px; border-radius: 999px;
+}
+.tabs { max-width: 1140px; margin: 0 auto; padding: 0 24px; display: flex; gap: 4px; overflow-x: auto; scrollbar-width: none; }
+.tabs::-webkit-scrollbar { display: none; }
+.tab {
+  background: none; border: none; border-bottom: 2px solid transparent;
+  color: var(--t2); font-family: inherit; font-size: 13px; font-weight: 500;
+  padding: 11px 14px; cursor: pointer; white-space: nowrap; transition: color .2s, border-color .2s;
+}
+.tab:hover { color: var(--text); }
+.tab.on { color: var(--teal-l); border-bottom-color: var(--teal-l); }
+
+/* ── LAYOUT ── */
+.sec { display: none; }
+.sec.on { display: block; }
+.wrap { max-width: 1140px; margin: 0 auto; padding: 32px 24px 72px; }
+.ey { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .1em; color: var(--t3); margin-bottom: 8px; }
+.ttl { font-size: 26px; font-weight: 700; letter-spacing: -.025em; margin-bottom: 8px; }
+.sub { font-size: 13px; color: var(--t2); margin-bottom: 26px; max-width: 720px; }
+
+/* ── ALERTAS ── */
+.alert { display: flex; gap: 13px; padding: 15px 18px; border-radius: var(--r); margin-bottom: 24px; border: 1px solid; }
+.alert.amber { background: var(--amber-bg); border-color: rgba(245,158,11,.25); }
+.alert.teal  { background: var(--teal-bg);  border-color: rgba(14,159,142,.25); }
+.alert-icon { font-size: 17px; line-height: 1.3; flex-shrink: 0; }
+.alert-title { font-size: 13px; font-weight: 600; margin-bottom: 3px; }
+.alert-text { font-size: 12px; color: var(--t2); line-height: 1.55; }
+
+/* ── KPIs ── */
+.kpi-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 26px; }
+@media (max-width: 760px) { .kpi-grid { grid-template-columns: 1fr; } }
+.kpi { background: var(--s1); border: 1px solid var(--border); border-radius: var(--r); padding: 18px 20px; position: relative; overflow: hidden; }
+.kpi::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 2px; background: var(--teal); }
+.kpi.go::before { background: var(--google); }
+.kpi-lbl { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .09em; color: var(--t3); margin-bottom: 10px; }
+.kpi-val { font-size: 28px; font-weight: 700; letter-spacing: -.03em; line-height: 1.1; }
+.kpi-val-sm { font-size: 24px; }
+.kpi-note { font-size: 11px; color: var(--t2); margin-top: 5px; }
+.badge { display: inline-block; font-family: 'JetBrains Mono', monospace; font-size: 10px; font-weight: 500; padding: 3px 8px; border-radius: var(--r-sm); margin-top: 10px; }
+.badge.neu { background: var(--s3); color: var(--t2); }
+.badge.up  { background: rgba(34,197,94,.12); color: var(--green); }
+.badge.dn  { background: rgba(239,68,68,.12); color: var(--red); }
+
+/* ── CARDS / TABELAS ── */
+.tcard { background: var(--s1); border: 1px solid var(--border); border-radius: var(--r); margin-bottom: 24px; overflow: hidden; }
+.tcard-hdr { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 14px 20px; border-bottom: 1px solid var(--border); flex-wrap: wrap; }
+.tcard-ttl { font-size: 13px; font-weight: 600; }
+.chip { font-size: 10px; color: var(--t3); background: var(--s3); padding: 4px 9px; border-radius: 999px; white-space: nowrap; }
+.tbl-scroll { overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; min-width: 560px; }
+th { text-align: left; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .07em; color: var(--t3); padding: 11px 20px; border-bottom: 1px solid var(--border); background: var(--s2); white-space: nowrap; }
+th.r { text-align: right; }
+td { padding: 11px 20px; font-size: 13px; border-bottom: 1px solid var(--border); }
+td.r { text-align: right; font-family: 'JetBrains Mono', monospace; font-size: 11px; white-space: nowrap; }
+td.cam { font-size: 11px; color: var(--t2); max-width: 260px; }
+tbody tr:last-child td { border-bottom: none; }
+tbody tr:hover td { background: rgba(255,255,255,.02); }
+tfoot td { padding: 12px 20px; font-size: 11px; font-weight: 600; background: var(--s2); font-family: 'JetBrains Mono', monospace; border-top: 1px solid var(--border); }
+tfoot td:first-child { font-family: 'Inter', sans-serif; font-size: 12px; }
+td.pos { color: var(--green); }
+td.neg { color: var(--red); }
+td.amber-txt { color: var(--amber); }
+
+/* ── BARRAS ── */
+.chart-ttl { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .09em; color: var(--t3); padding: 15px 20px 10px; border-top: 1px solid var(--border); }
+.bars { padding: 2px 20px 18px; }
+.bar-row { display: flex; align-items: center; gap: 10px; margin-bottom: 5px; }
+.bar-lbl { width: 210px; font-size: 10px; color: var(--t2); text-align: right; flex-shrink: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.bar-tr { flex: 1; height: 18px; background: var(--s3); border-radius: 4px; overflow: hidden; }
+.bar-fi { height: 100%; border-radius: 4px; min-width: 2px; transition: width .35s ease; }
+.bar-vl { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--t2); width: 82px; flex-shrink: 0; }
+
+/* ── INSIGHTS ── */
+.insights { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 24px; }
+@media (max-width: 620px) { .insights { grid-template-columns: 1fr; } }
+.insight { background: var(--s1); border: 1px solid var(--border); border-radius: var(--r-sm); padding: 15px 17px; }
+.ins-icon { font-size: 16px; margin-bottom: 7px; }
+.ins-ttl { font-size: 12px; font-weight: 600; margin-bottom: 4px; }
+.ins-txt { font-size: 11px; color: var(--t2); line-height: 1.55; }
+
+/* ── ESTADO VAZIO / SETUP ── */
+.setup { max-width: 780px; margin: 0 auto; padding: 56px 24px 80px; }
+.setup h1 { font-size: 24px; font-weight: 700; letter-spacing: -.025em; margin-bottom: 10px; }
+.setup .lead { font-size: 14px; color: var(--t2); margin-bottom: 30px; line-height: 1.6; }
+.step { display: flex; gap: 14px; background: var(--s1); border: 1px solid var(--border); border-radius: var(--r); padding: 17px 19px; margin-bottom: 10px; }
+.step-num { width: 24px; height: 24px; border-radius: 6px; background: var(--teal-bg); color: var(--teal-l); font-size: 12px; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.step-ttl { font-size: 13px; font-weight: 600; margin-bottom: 4px; }
+.step-txt { font-size: 12px; color: var(--t2); line-height: 1.6; }
+.step-txt code { font-family: 'JetBrains Mono', monospace; font-size: 11px; background: var(--s3); padding: 1px 5px; border-radius: 4px; color: var(--teal-l); }
+.pend { display: inline-block; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; padding: 3px 8px; border-radius: 999px; margin-left: 8px; }
+.pend.block { background: rgba(239,68,68,.12); color: var(--red); }
+.pend.ok { background: rgba(34,197,94,.12); color: var(--green); }
+
+.foot { border-top: 1px solid var(--border); padding: 22px 24px 40px; text-align: center; font-size: 11px; color: var(--t3); }
+
+@media (max-width: 620px) {
+  .wrap { padding: 24px 16px 60px; }
+  .hdr-row { padding: 11px 16px; }
+  .tabs { padding: 0 16px; }
+  .switch-inner { padding: 10px 16px; }
+  .kpi-val { font-size: 23px; }
+  .bar-lbl { width: 120px; font-size: 9px; }
+  th, td { padding: 10px 14px; }
+  .bar-vl { width: 66px; font-size: 9px; }
+}
+</style>
+</head>
+<body>
+
+<div id="app"></div>
+
+<script>
+/* ═══════════════════════════════════════════════════════════════════════
+   DADOS DO RELATÓRIO — única parte que se edita a cada fechamento mensal.
+   Todo o resto da página (KPIs, totais, CPL/CPR, CTR, %, ritmo diário,
+   projeções, barras) é calculado automaticamente a partir daqui.
+
+   Fonte: export do Google Ads por dia + palavra-chave, convertido por
+   tools/csv-google-para-dados.py. A conta roda só Google Ads, com campanhas
+   de pesquisa otimizadas para captação de leads.
+
+   Estrutura de um mês:
+   {
+     id:        'agosto-2026',            // slug único
+     rotulo:    'Agosto 2026',            // texto do botão
+     periodo:   '01/08 – 25/08',          // texto do chip do cabeçalho
+     dias:      25,                       // dias com veiculação no recorte
+     diasNoMes: 31,                       // total de dias do mês
+     parcial:   true,                     // true = mês em andamento
+     google:    [ { nome, investimento, impressoes, cliques, leads, dias } ],
+     keywords:  [ { termo, campanha, correspondencia, investimento,
+                    impressoes, cliques, leads } ],                 // opcional
+     alertas:   [ { tipo:'amber'|'teal', icone, titulo, texto } ],  // opcional
+     destaques: [ { icone, titulo, texto } ]                        // opcional
+   }
+
+   O orçamento não fica aqui — mora em ORCAMENTO_DIARIO, logo abaixo, porque
+   este bloco é sobrescrito pelo conversor a cada fechamento.
+   ═══════════════════════════════════════════════════════════════════════ */
+
+const DADOS = {
+  cliente:  'Clínica Mais Med',
+  operador: 'Clintia',
+  meses: [
+    /* Gerado por tools/csv-google-para-dados.py a partir do export da conta. */
+    {
+      id: "agosto-2026",
+      rotulo: "Agosto 2026",
+      periodo: "01/08 – 25/08",
+      dias: 25, diasNoMes: 31, parcial: true,
+      google: [
+        { nome: "[Clínico Geral]", investimento: 251.65, impressoes: 1029, cliques: 161, leads: 53.0, dias: 25 },
+        { nome: "[Pediatria]", investimento: 251.18, impressoes: 1279, cliques: 161, leads: 51.0, dias: 25 },
+        { nome: "[Ultrassom]", investimento: 178.73, impressoes: 213, cliques: 27, leads: 9.0, dias: 13 },
+        { nome: "[Marca]", investimento: 159.5, impressoes: 180, cliques: 55, leads: 11.0, dias: 23 },
+      ],
+      keywords: [
+        { termo: "clínica médica ipiaú", campanha: "[Pediatria]", correspondencia: "Correspondência de frase", investimento: 231.5, impressoes: 1032, cliques: 148, leads: 50.0 },
+        { termo: "clínica médica ipiaú", campanha: "[Clínico Geral]", correspondencia: "Correspondência de frase", investimento: 222.93, impressoes: 875, cliques: 142, leads: 48.0 },
+        { termo: "ultrassom ipiaú", campanha: "[Ultrassom]", correspondencia: "Correspondência de frase", investimento: 113.25, impressoes: 158, cliques: 20, leads: 6.0 },
+        { termo: "clínica mais med ipiaú", campanha: "[Marca]", correspondencia: "Correspondência exata", investimento: 81.14, impressoes: 83, cliques: 30, leads: 8.0 },
+        { termo: "ultrassonografia ipiaú", campanha: "[Ultrassom]", correspondencia: "Correspondência de frase", investimento: 65.48, impressoes: 55, cliques: 7, leads: 3.0 },
+        { termo: "Mais Med Ipiaú", campanha: "[Marca]", correspondencia: "Correspondência de frase", investimento: 46.6, impressoes: 46, cliques: 15, leads: 3.0 },
+        { termo: "Clinica Mais Med", campanha: "[Marca]", correspondencia: "Correspondência de frase", investimento: 31.76, impressoes: 50, cliques: 10, leads: 0.0 },
+        { termo: "pediatra ipiaú", campanha: "[Pediatria]", correspondencia: "Correspondência de frase", investimento: 19.68, impressoes: 247, cliques: 13, leads: 1.0 },
+        { termo: "clinica popular", campanha: "[Clínico Geral]", correspondencia: "Correspondência ampla", investimento: 13.84, impressoes: 102, cliques: 10, leads: 2.0 },
+        { termo: "climed ipiaú", campanha: "[Clínico Geral]", correspondencia: "Correspondência exata", investimento: 11.12, impressoes: 24, cliques: 6, leads: 2.0 },
+        { termo: "med mais consultas", campanha: "[Clínico Geral]", correspondencia: "Correspondência ampla", investimento: 3.76, impressoes: 28, cliques: 3, leads: 1.0 },
+        { termo: "clínica mais med fotos", campanha: "[Marca]", correspondencia: "Correspondência exata", investimento: 0.0, impressoes: 1, cliques: 0, leads: 0.0 },
+      ]
+    },
+    {
+      id: "julho-2026",
+      rotulo: "Julho 2026",
+      periodo: "01/07 – 31/07",
+      dias: 31, diasNoMes: 31, parcial: false,
+      google: [
+        { nome: "[Clínico Geral]", investimento: 607.24, impressoes: 781, cliques: 92, leads: 27.33, dias: 25 },
+        { nome: "[Ultrassom]", investimento: 437.44, impressoes: 551, cliques: 83, leads: 26.33, dias: 23 },
+        { nome: "[Pediatria]", investimento: 409.21, impressoes: 879, cliques: 82, leads: 21.5, dias: 31 },
+        { nome: "[Marca]", investimento: 223.85, impressoes: 297, cliques: 62, leads: 9.83, dias: 27 },
+      ],
+      keywords: [
+        { termo: "med mais consultas", campanha: "[Clínico Geral]", correspondencia: "Correspondência ampla", investimento: 345.85, impressoes: 474, cliques: 44, leads: 10.5 },
+        { termo: "pediatra ipiaú", campanha: "[Pediatria]", correspondencia: "Correspondência de frase", investimento: 293.6, impressoes: 686, cliques: 65, leads: 18.0 },
+        { termo: "ultrassonografia ipiaú", campanha: "[Ultrassom]", correspondencia: "Correspondência de frase", investimento: 251.04, impressoes: 378, cliques: 55, leads: 15.0 },
+        { termo: "ultrassom ipiaú", campanha: "[Ultrassom]", correspondencia: "Correspondência de frase", investimento: 186.4, impressoes: 173, cliques: 28, leads: 11.33 },
+        { termo: "clinica popular", campanha: "[Clínico Geral]", correspondencia: "Correspondência ampla", investimento: 154.41, impressoes: 188, cliques: 31, leads: 12.83 },
+        { termo: "Mais Med Ipiaú", campanha: "[Marca]", correspondencia: "Correspondência de frase", investimento: 133.11, impressoes: 158, cliques: 35, leads: 7.0 },
+        { termo: "clínica médica ipiaú", campanha: "[Pediatria]", correspondencia: "Correspondência de frase", investimento: 115.61, impressoes: 193, cliques: 17, leads: 3.5 },
+        { termo: "clínica médica ipiaú", campanha: "[Clínico Geral]", correspondencia: "Correspondência de frase", investimento: 106.98, impressoes: 119, cliques: 17, leads: 4.0 },
+        { termo: "Clinica Mais Med", campanha: "[Marca]", correspondencia: "Correspondência de frase", investimento: 56.35, impressoes: 87, cliques: 14, leads: 1.0 },
+        { termo: "clínica mais med ipiaú", campanha: "[Marca]", correspondencia: "Correspondência exata", investimento: 34.39, impressoes: 52, cliques: 13, leads: 1.83 },
+      ]
+    },
+    {
+      id: "junho-2026",
+      rotulo: "Junho 2026",
+      periodo: "04/06 – 30/06",
+      dias: 26, diasNoMes: 30, parcial: false,
+      google: [
+        { nome: "[Marca]", investimento: 222.51, impressoes: 311, cliques: 50, leads: 10.0, dias: 26 },
+        { nome: "[Pediatria]", investimento: 54.97, impressoes: 98, cliques: 9, leads: 2.0, dias: 7 },
+      ],
+      keywords: [
+        { termo: "Mais Med Ipiaú", campanha: "[Marca]", correspondencia: "Correspondência de frase", investimento: 143.21, impressoes: 164, cliques: 31, leads: 9.0 },
+        { termo: "Clinica Mais Med", campanha: "[Marca]", correspondencia: "Correspondência de frase", investimento: 79.3, impressoes: 147, cliques: 19, leads: 1.0 },
+        { termo: "pediatra ipiaú", campanha: "[Pediatria]", correspondencia: "Correspondência exata", investimento: 54.97, impressoes: 98, cliques: 9, leads: 2.0 },
+      ]
+    },
+    {
+      id: "maio-2026",
+      rotulo: "Maio 2026",
+      periodo: "13/05 – 31/05",
+      dias: 13, diasNoMes: 31, parcial: false,
+      alertas: [
+        { tipo: "amber", icone: "🏷️", titulo: "Período sem conversões registradas", texto: "Houve investimento (R$ 191,18) e cliques, mas nenhuma conversão foi contabilizada. Confirmar se a tag de conversão já estava instalada neste período — sem ela, o Google registra o clique mas não o contato gerado, e o CPL fica indisponível." },
+      ],
+      google: [
+        { nome: "PRIMEIRA CAMPANHA", investimento: 191.18, impressoes: 929, cliques: 105, leads: 0.0, dias: 13 },
+      ],
+      keywords: [
+        { termo: "clínica médica", campanha: "PRIMEIRA CAMPANHA", correspondencia: "Correspondência ampla", investimento: 91.9, impressoes: 480, cliques: 59, leads: 0.0 },
+        { termo: "clinica medica", campanha: "PRIMEIRA CAMPANHA", correspondencia: "Correspondência ampla", investimento: 35.99, impressoes: 88, cliques: 20, leads: 0.0 },
+        { termo: "ultrassom", campanha: "PRIMEIRA CAMPANHA", correspondencia: "Correspondência ampla", investimento: 24.92, impressoes: 74, cliques: 3, leads: 0.0 },
+        { termo: "Pediatra", campanha: "PRIMEIRA CAMPANHA", correspondencia: "Correspondência ampla", investimento: 18.49, impressoes: 85, cliques: 8, leads: 0.0 },
+        { termo: "clinica ipiau", campanha: "PRIMEIRA CAMPANHA", correspondencia: "Correspondência ampla", investimento: 12.0, impressoes: 99, cliques: 10, leads: 0.0 },
+        { termo: "médico", campanha: "PRIMEIRA CAMPANHA", correspondencia: "Correspondência ampla", investimento: 7.88, impressoes: 71, cliques: 5, leads: 0.0 },
+        { termo: "cardiologista", campanha: "PRIMEIRA CAMPANHA", correspondencia: "Correspondência ampla", investimento: 0.0, impressoes: 9, cliques: 0, leads: 0.0 },
+        { termo: "eletrocardiograma.", campanha: "PRIMEIRA CAMPANHA", correspondencia: "Correspondência ampla", investimento: 0.0, impressoes: 3, cliques: 0, leads: 0.0 },
+        { termo: "exames clinicos", campanha: "PRIMEIRA CAMPANHA", correspondencia: "Correspondência ampla", investimento: 0.0, impressoes: 7, cliques: 0, leads: 0.0 },
+        { termo: "endoscopia", campanha: "PRIMEIRA CAMPANHA", correspondencia: "Correspondência ampla", investimento: 0.0, impressoes: 3, cliques: 0, leads: 0.0 },
+        { termo: "otorrino", campanha: "PRIMEIRA CAMPANHA", correspondencia: "Correspondência ampla", investimento: 0.0, impressoes: 2, cliques: 0, leads: 0.0 },
+        { termo: "ortopedista", campanha: "PRIMEIRA CAMPANHA", correspondencia: "Correspondência ampla", investimento: 0.0, impressoes: 6, cliques: 0, leads: 0.0 },
+        { termo: "endocrino", campanha: "PRIMEIRA CAMPANHA", correspondencia: "Correspondência ampla", investimento: 0.0, impressoes: 1, cliques: 0, leads: 0.0 },
+        { termo: "clínico geral", campanha: "PRIMEIRA CAMPANHA", correspondencia: "Correspondência ampla", investimento: 0.0, impressoes: 1, cliques: 0, leads: 0.0 },
+      ]
+    },
+    {
+      id: "abril-2026",
+      rotulo: "Abril 2026",
+      periodo: "05/04 – 27/04",
+      dias: 23, diasNoMes: 30, parcial: false,
+      alertas: [
+        { tipo: "amber", icone: "🏷️", titulo: "Período sem conversões registradas", texto: "Houve investimento (R$ 229,12) e cliques, mas nenhuma conversão foi contabilizada. Confirmar se a tag de conversão já estava instalada neste período — sem ela, o Google registra o clique mas não o contato gerado, e o CPL fica indisponível." },
+      ],
+      google: [
+        { nome: "PRIMEIRA CAMPANHA", investimento: 229.12, impressoes: 1153, cliques: 125, leads: 0.0, dias: 23 },
+      ],
+      keywords: [
+        { termo: "clínica médica", campanha: "PRIMEIRA CAMPANHA", correspondencia: "Correspondência ampla", investimento: 182.65, impressoes: 767, cliques: 97, leads: 0.0 },
+        { termo: "médico", campanha: "PRIMEIRA CAMPANHA", correspondencia: "Correspondência ampla", investimento: 27.28, impressoes: 197, cliques: 17, leads: 0.0 },
+        { termo: "clinicas medicas", campanha: "PRIMEIRA CAMPANHA", correspondencia: "Correspondência ampla", investimento: 11.73, impressoes: 20, cliques: 5, leads: 0.0 },
+        { termo: "ortopedista", campanha: "PRIMEIRA CAMPANHA", correspondencia: "Correspondência ampla", investimento: 3.53, impressoes: 45, cliques: 2, leads: 0.0 },
+        { termo: "clinica ipiau", campanha: "PRIMEIRA CAMPANHA", correspondencia: "Correspondência exata", investimento: 2.12, impressoes: 52, cliques: 2, leads: 0.0 },
+        { termo: "consultas médicas", campanha: "PRIMEIRA CAMPANHA", correspondencia: "Correspondência ampla", investimento: 1.08, impressoes: 8, cliques: 1, leads: 0.0 },
+        { termo: "exames clinicos", campanha: "PRIMEIRA CAMPANHA", correspondencia: "Correspondência ampla", investimento: 0.73, impressoes: 5, cliques: 1, leads: 0.0 },
+        { termo: "endoscopia", campanha: "PRIMEIRA CAMPANHA", correspondencia: "Correspondência ampla", investimento: 0.0, impressoes: 10, cliques: 0, leads: 0.0 },
+        { termo: "otorrino", campanha: "PRIMEIRA CAMPANHA", correspondencia: "Correspondência ampla", investimento: 0.0, impressoes: 12, cliques: 0, leads: 0.0 },
+        { termo: "psiquiatra", campanha: "PRIMEIRA CAMPANHA", correspondencia: "Correspondência ampla", investimento: 0.0, impressoes: 12, cliques: 0, leads: 0.0 },
+        { termo: "pediatra", campanha: "PRIMEIRA CAMPANHA", correspondencia: "Correspondência ampla", investimento: 0.0, impressoes: 1, cliques: 0, leads: 0.0 },
+        { termo: "ultrassom", campanha: "PRIMEIRA CAMPANHA", correspondencia: "Correspondência ampla", investimento: 0.0, impressoes: 4, cliques: 0, leads: 0.0 },
+        { termo: "eletrocardiograma.", campanha: "PRIMEIRA CAMPANHA", correspondencia: "Correspondência ampla", investimento: 0.0, impressoes: 1, cliques: 0, leads: 0.0 },
+        { termo: "clinica consulta", campanha: "PRIMEIRA CAMPANHA", correspondencia: "Correspondência ampla", investimento: 0.0, impressoes: 1, cliques: 0, leads: 0.0 },
+        { termo: "Pediatra", campanha: "PRIMEIRA CAMPANHA", correspondencia: "Correspondência ampla", investimento: 0.0, impressoes: 13, cliques: 0, leads: 0.0 },
+        { termo: "cardiologista", campanha: "PRIMEIRA CAMPANHA", correspondencia: "Correspondência ampla", investimento: 0.0, impressoes: 2, cliques: 0, leads: 0.0 },
+        { termo: "exame popular", campanha: "PRIMEIRA CAMPANHA", correspondencia: "Correspondência ampla", investimento: 0.0, impressoes: 2, cliques: 0, leads: 0.0 },
+        { termo: "clinica medica", campanha: "PRIMEIRA CAMPANHA", correspondencia: "Correspondência ampla", investimento: 0.0, impressoes: 1, cliques: 0, leads: 0.0 },
+      ]
+    },
+  ]
+};
+
+/* ═══════════════════════════════════════════════════════════════════════
+   ORÇAMENTO DIÁRIO POR CAMPANHA
+
+   Fica fora de DADOS.meses de propósito: aquele bloco é sobrescrito toda vez
+   que o conversor roda, e o orçamento não vem no export do Google Ads.
+
+   Chaveado por mês porque a verba muda ao longo do tempo — o plano atual não
+   descreve o que estava valendo em julho. Mês sem entrada aqui simplesmente
+   não renderiza o bloco de orçamento.
+   ═══════════════════════════════════════════════════════════════════════ */
+const ORCAMENTO_DIARIO = {
+  'agosto-2026': {
+    '[Marca]':         6.00,
+    '[Pediatria]':    10.00,
+    '[Ultrassom]':    20.00,
+    '[Clínico Geral]': 10.00
+  }
+};
+
+/* ═══════════════════════════════════════════════════════════════════════
+   FORMATAÇÃO
+   ═══════════════════════════════════════════════════════════════════════ */
+const brl   = n => 'R$ ' + n.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+const brl0  = n => 'R$ ' + n.toLocaleString('pt-BR', { maximumFractionDigits: 0 });
+const num   = (n, c = 0) => n.toLocaleString('pt-BR', { minimumFractionDigits: c, maximumFractionDigits: c });
+const pct   = n => num(n, 1).replace('.', ',') + '%';
+const div   = (a, b) => (b ? a / b : 0);
+const cpx   = (custo, qtd) => (qtd ? brl(custo / qtd) : '—');   // CPL/CPR sem denominador vira travessão
+const esc   = s => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+const plural = (n, um, muitos) => `${num(n)} ${n === 1 ? um : muitos}`;
+
+/* ═══════════════════════════════════════════════════════════════════════
+   AGREGAÇÃO
+   ═══════════════════════════════════════════════════════════════════════ */
+function somaGoogle(cs) {
+  const t = cs.reduce((a, c) => ({
+    investimento: a.investimento + (c.investimento || 0),
+    impressoes:   a.impressoes   + (c.impressoes   || 0),
+    cliques:      a.cliques      + (c.cliques      || 0),
+    leads:        a.leads        + (c.leads        || 0)
+  }), { investimento: 0, impressoes: 0, cliques: 0, leads: 0 });
+  t.cpl = div(t.investimento, t.leads);
+  t.ctr = div(t.cliques, t.impressoes) * 100;
+  return t;
+}
+
+function consolidar(mes) {
+  const g = somaGoogle(mes.google || []);
+  return {
+    g,
+    investimento: g.investimento,
+    leads:        g.leads,
+    cpl:          g.cpl,
+    investDia:    div(g.investimento, mes.dias),
+    leadsDia:     div(g.leads, mes.dias)
+  };
+}
+
+
+function kpi(classe, rotulo, valor, nota, badge, badgeTipo) {
+  return `<div class="kpi ${classe}">
+    <div class="kpi-lbl">${rotulo}</div>
+    <div class="kpi-val ${String(valor).length > 8 ? 'kpi-val-sm' : ''}">${valor}</div>
+    ${nota ? `<div class="kpi-note">${nota}</div>` : ''}
+    ${badge ? `<div class="badge ${badgeTipo || 'neu'}">${badge}</div>` : ''}
+  </div>`;
+}
+
+function card(titulo, chip, corpo) {
+  return `<div class="tcard">
+    <div class="tcard-hdr">
+      <span class="tcard-ttl">${titulo}</span>
+      ${chip ? `<span class="chip">${chip}</span>` : ''}
+    </div>
+    ${corpo}
+  </div>`;
+}
+
+function barras(titulo, itens, cor, formatar) {
+  if (!itens.length) return '';
+  const max = Math.max(...itens.map(i => i.valor)) || 1;
+  return `<div class="chart-ttl">${titulo}</div><div class="bars">` +
+    itens.map(i => `<div class="bar-row">
+      <span class="bar-lbl" title="${esc(i.nome)}">${esc(i.nome)}</span>
+      <div class="bar-tr"><div class="bar-fi" style="width:${(i.valor / max * 100).toFixed(1)}%;background:${cor}"></div></div>
+      <span class="bar-vl">${formatar(i.valor)}</span>
+    </div>`).join('') + '</div>';
+}
+
+function alertas(lista) {
+  return (lista || []).map(a => `<div class="alert ${a.tipo || 'amber'}">
+    <div class="alert-icon">${a.icone || '⚠️'}</div>
+    <div>
+      <div class="alert-title">${esc(a.titulo)}</div>
+      <div class="alert-text">${esc(a.texto)}</div>
+    </div>
+  </div>`).join('');
+}
+
+function destaques(lista) {
+  if (!lista || !lista.length) return '';
+  return '<div class="insights">' + lista.map(d => `<div class="insight">
+    <div class="ins-icon">${d.icone || '📌'}</div>
+    <div class="ins-ttl">${esc(d.titulo)}</div>
+    <div class="ins-txt">${esc(d.texto)}</div>
+  </div>`).join('') + '</div>';
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
+   SEÇÃO · VISÃO GERAL
+   ═══════════════════════════════════════════════════════════════════════ */
+function secGeral(mes) {
+  const c = consolidar(mes);
+  const nCampanhas = (mes.google || []).length;
+
+  const avisoParcial = mes.parcial ? [{
+    tipo: 'amber', icone: '📅',
+    titulo: `Mês em andamento — dados de ${mes.periodo}`,
+    texto: `Os totais abaixo cobrem ${mes.dias} dos ${mes.diasNoMes} dias do mês e não devem ser comparados diretamente com os totais de meses fechados. Para leitura justa entre meses, use o ritmo diário.`
+  }] : [];
+
+  /* ── Evolução mês a mês ── */
+  const ordem = DADOS.meses.slice().reverse();            // do mais antigo para o mais recente
+  const linhaMes = m => {
+    const x = consolidar(m);
+    const atual = m.id === mes.id;
+    return `<tr${atual ? ' style="background:var(--teal-bg)"' : ''}>
+      <td${atual ? ' style="font-weight:600"' : ''}>${esc(m.rotulo)}${m.parcial ? ' (parcial)' : ''}</td>
+      <td class="r">${m.dias}</td>
+      <td class="r">${brl(x.investimento)}</td>
+      <td class="r">${brl(x.investDia)}</td>
+      <td class="r">${num(x.leads, 1)}</td>
+      <td class="r">${num(x.leadsDia, 1)}</td>
+      <td class="r">${cpx(x.investimento, x.leads)}</td>
+    </tr>`;
+  };
+  const acc = ordem.reduce((a, m) => {
+    const x = consolidar(m);
+    return { investimento: a.investimento + x.investimento, leads: a.leads + x.leads, dias: a.dias + m.dias };
+  }, { investimento: 0, leads: 0, dias: 0 });
+
+  /* meses com investimento e nenhuma conversão diluem o CPL acumulado sem ter
+     gerado nenhum lead medido — o acumulado dos meses rastreados é a leitura justa */
+  const semRastreio = ordem.filter(m => { const x = consolidar(m); return x.investimento > 0 && !x.leads; });
+  const gastoSemRastreio = semRastreio.reduce((a, m) => a + consolidar(m).investimento, 0);
+  const notaCPL = semRastreio.length ? `<div style="padding:12px 20px;border-top:1px solid var(--border);font-size:11px;color:var(--t2);line-height:1.6">
+      O acumulado inclui ${brl(gastoSemRastreio)} investidos em ${semRastreio.map(m => esc(m.rotulo)).join(' e ')}, ${semRastreio.length === 1 ? 'período' : 'períodos'} sem nenhuma conversão registrada.
+      Considerando apenas os meses com rastreamento ativo, o CPL acumulado é
+      <strong style="color:var(--teal-l)">${cpx(acc.investimento - gastoSemRastreio, acc.leads)}</strong>.
+    </div>` : '';
+
+  const evolucao = card('Evolução mês a mês', 'ritmo diário permite comparar mês parcial com mês fechado', `
+    <div class="tbl-scroll"><table>
+      <thead><tr>
+        <th>Período</th><th class="r">Dias</th><th class="r">Investimento</th><th class="r">Invest./dia</th>
+        <th class="r">Leads</th><th class="r">Leads/dia</th><th class="r">CPL</th>
+      </tr></thead>
+      <tbody>${ordem.map(linhaMes).join('')}</tbody>
+      <tfoot><tr>
+        <td>Acumulado</td>
+        <td class="r">${acc.dias}</td>
+        <td class="r">${brl(acc.investimento)}</td>
+        <td class="r">${brl(div(acc.investimento, acc.dias))}</td>
+        <td class="r">${num(acc.leads, 1)}</td>
+        <td class="r">${num(div(acc.leads, acc.dias), 1)}</td>
+        <td class="r">${cpx(acc.investimento, acc.leads)}</td>
+      </tr></tfoot>
+    </table></div>
+    ${notaCPL}
+    ${barras('Leads por mês', ordem.map(m => ({ nome: m.rotulo + (m.parcial ? ' (parcial)' : ''), valor: consolidar(m).leads })), 'var(--teal)', v => num(v, 1) + ' leads')}
+    ${barras('Investimento por mês', ordem.map(m => ({ nome: m.rotulo + (m.parcial ? ' (parcial)' : ''), valor: consolidar(m).investimento })), 'var(--google)', brl0)}`);
+
+  /* ── Orçamento diário x investido real, por campanha ── */
+  const plano = ORCAMENTO_DIARIO[mes.id];
+  let orcamento = '';
+  if (plano) {
+    const linhas = (mes.google || [])
+      .map(camp => {
+        const orcDia = plano[camp.nome];
+        const dias   = camp.dias || mes.dias;
+        return orcDia == null ? null : { camp, orcDia, dias, previsto: orcDia * dias };
+      })
+      .filter(Boolean)
+      .sort((a, b) => b.previsto - a.previsto);
+
+    /* faixas de consumo: perto do previsto é saudável; muito acima estoura a
+       verba, muito abaixo significa verba parada que não virou lead */
+    const classe = p => p >= 105 ? 'neg' : (p >= 90 ? 'pos' : 'amber-txt');
+    const tOrcDia   = linhas.reduce((a, l) => a + l.orcDia, 0);
+    const tPrevisto = linhas.reduce((a, l) => a + l.previsto, 0);
+    const tReal     = linhas.reduce((a, l) => a + l.camp.investimento, 0);
+
+    /* campanha que veiculou menos dias que o período não estourou nem economizou — ficou parada */
+    const pausadas = linhas.filter(l => l.dias < mes.dias);
+    const nota = pausadas.length ? `<div style="padding:12px 20px;border-top:1px solid var(--border);font-size:11px;color:var(--t2);line-height:1.6">
+        ${pausadas.map(l => `<strong style="color:var(--text)">${esc(l.camp.nome)}</strong> veiculou ${l.dias} dos ${mes.dias} dias do período`).join('; ')}.
+        O orçamento previsto considera apenas os dias em que a campanha esteve no ar.
+      </div>` : '';
+
+    orcamento = card('Orçamento Diário x Investido Real', `${mes.periodo} · ${brl(tOrcDia)} / dia no plano`, `
+      <div class="tbl-scroll"><table>
+        <thead><tr>
+          <th>Campanha</th><th class="r">Orç. / dia</th><th class="r">Dias</th>
+          <th class="r">Previsto</th><th class="r">Investido</th><th class="r">% consumido</th>
+        </tr></thead>
+        <tbody>${linhas.map(l => {
+          const p = div(l.camp.investimento, l.previsto) * 100;
+          return `<tr>
+            <td class="cam" style="color:var(--text)">${esc(l.camp.nome)}</td>
+            <td class="r">${brl(l.orcDia)}</td>
+            <td class="r"${l.dias < mes.dias ? ' style="color:var(--amber)"' : ''}>${l.dias}</td>
+            <td class="r">${brl(l.previsto)}</td>
+            <td class="r">${brl(l.camp.investimento)}</td>
+            <td class="r ${classe(p)}">${pct(p)}</td>
+          </tr>`;
+        }).join('')}</tbody>
+        <tfoot><tr>
+          <td>Total</td>
+          <td class="r">${brl(tOrcDia)}</td>
+          <td class="r">—</td>
+          <td class="r">${brl(tPrevisto)}</td>
+          <td class="r">${brl(tReal)}</td>
+          <td class="r ${classe(div(tReal, tPrevisto) * 100)}">${pct(div(tReal, tPrevisto) * 100)}</td>
+        </tr></tfoot>
+      </table></div>
+      ${nota}`);
+  }
+
+  /* ── Projeção com base no ritmo diário ── */
+  const projecao = !mes.parcial ? '' : card('Projeção', 'com base no ritmo diário atual', `
+    <div style="padding:20px"><div class="kpi-grid" style="margin-bottom:0">
+      ${kpi('tc', 'Próximos 7 dias', brl0(c.investDia * 7), `≈ ${num(c.leadsDia * 7, 0)} leads no ritmo atual`)}
+      ${kpi('tc', 'Próximos 15 dias', brl0(c.investDia * 15), `≈ ${num(c.leadsDia * 15, 0)} leads no ritmo atual`)}
+      ${kpi('tc', 'Próximos 30 dias', brl0(c.investDia * 30), `≈ ${num(c.leadsDia * 30, 0)} leads no ritmo atual`)}
+    </div></div>`);
+
+  return `<div class="wrap">
+    <div class="ey">${mes.parcial ? 'Consolidado Parcial' : 'Consolidado'} · ${esc(mes.rotulo)}</div>
+    <h1 class="ttl">Performance Geral</h1>
+    <p class="sub">Google Ads · ${plural(nCampanhas, 'campanha', 'campanhas')} com veiculação · ${mes.dias} ${mes.parcial ? `dos ${mes.diasNoMes} dias do mês` : (mes.dias === 1 ? 'dia' : 'dias')}.</p>
+    ${alertas(avisoParcial.concat(mes.alertas || []))}
+    <div class="kpi-grid">
+      ${kpi('tc', 'Investimento', brl0(c.investimento), `${mes.dias} dias de veiculação`, `${brl(c.investDia)} / dia`)}
+      ${kpi('tc', 'Total de Leads', num(c.leads, 0), 'Conversões no período', `${num(c.leadsDia, 1)} leads / dia`)}
+      ${kpi('tc', 'CPL Médio', cpx(c.investimento, c.leads), c.leads ? 'Custo por lead' : 'Nenhuma conversão registrada no período', c.leads ? `CTR ${pct(c.g.ctr)}` : 'verificar rastreamento', c.leads ? 'neu' : 'dn')}
+    </div>
+    ${evolucao}${orcamento}${projecao}${destaques(mes.destaques)}
+  </div>`;
+}
+
+
+function tabelaGoogle(cs, t) {
+  return `<div class="tbl-scroll"><table>
+    <thead><tr><th>Campanha</th><th class="r">Investimento</th><th class="r">Leads</th><th class="r">CPL</th><th class="r">CTR</th><th class="r">Impressões</th></tr></thead>
+    <tbody>${cs.map(c => `<tr>
+      <td class="cam">${esc(c.nome)}</td>
+      <td class="r">${brl(c.investimento)}</td>
+      <td class="r">${num(c.leads, 1)}</td>
+      <td class="r">${cpx(c.investimento, c.leads)}</td>
+      <td class="r">${pct(div(c.cliques, c.impressoes) * 100)}</td>
+      <td class="r">${num(c.impressoes)}</td>
+    </tr>`).join('')}</tbody>
+    <tfoot><tr>
+      <td>Total do mês</td>
+      <td class="r">${brl(t.investimento)}</td>
+      <td class="r">${num(t.leads, 1)} leads</td>
+      <td class="r">CPL ${cpx(t.investimento, t.leads)}</td>
+      <td class="r">${pct(t.ctr)}</td>
+      <td class="r">${num(t.impressoes)}</td>
+    </tr></tfoot>
+  </table></div>`;
+}
+
+function secCampanhas(mes) {
+  const cs = (mes.google || []).slice().sort((a, b) => b.leads - a.leads);
+  const t = somaGoogle(cs);
+  if (!cs.length) return vazio('Campanhas', 'Nenhuma campanha com veiculação neste recorte.');
+
+  /* KPIs aqui destacam a leitura por campanha; os totais do mês estão na Visão Geral */
+  const MIN_LEADS = 3;                       // abaixo disso o CPL é ruído, não desempenho
+  const porCPL    = arr => arr.slice().sort((a, b) => div(a.investimento, a.leads) - div(b.investimento, b.leads))[0];
+  const comLeads  = cs.filter(c => c.leads > 0);
+  const maisLeads = cs[0];
+  const melhorCPL = porCPL(comLeads.filter(c => c.leads >= MIN_LEADS)) || porCPL(comLeads);
+  const maiorGasto = cs.slice().sort((a, b) => b.investimento - a.investimento)[0];
+
+  return `<div class="wrap">
+    <div class="ey" style="color:var(--google)">Google Ads · ${esc(mes.rotulo)}${mes.parcial ? ' (parcial)' : ''}</div>
+    <h1 class="ttl">Campanhas de Pesquisa</h1>
+    <p class="sub">${plural(cs.length, 'campanha ativa', 'campanhas ativas')} · ${mes.periodo} · dados do export do Google Ads.</p>
+    <div class="kpi-grid">
+      ${maisLeads && maisLeads.leads
+        ? kpi('go', 'Mais leads', num(maisLeads.leads, 0), esc(maisLeads.nome), `${pct(div(maisLeads.leads, t.leads) * 100)} dos leads do mês`)
+        : kpi('go', 'Mais leads', '—', 'Nenhuma campanha converteu no período')}
+      ${melhorCPL
+        ? kpi('go', 'Melhor CPL', cpx(melhorCPL.investimento, melhorCPL.leads), esc(melhorCPL.nome), `${num(melhorCPL.leads, 0)} leads`, 'up')
+        : kpi('go', 'Melhor CPL', '—', 'Sem conversões para comparar')}
+      ${kpi('go', 'Maior investimento', brl0(maiorGasto.investimento), esc(maiorGasto.nome), `${pct(div(maiorGasto.investimento, t.investimento) * 100)} da verba do mês`)}
+    </div>
+    ${card('Detalhamento por Campanha', 'ordenado por leads ↓',
+      tabelaGoogle(cs, t) +
+      barras('Leads por Campanha', cs.filter(c => c.leads > 0).map(c => ({ nome: c.nome, valor: c.leads })), 'var(--teal)', v => num(v, 0) + ' leads') +
+      barras('Investimento por Campanha', cs.slice().sort((a, b) => b.investimento - a.investimento).map(c => ({ nome: c.nome, valor: c.investimento })), 'var(--google)', brl0)
+    )}
+  </div>`;
+}
+
+
+/* ═══════════════════════════════════════════════════════════════════════
+   SEÇÃO · PALAVRAS-CHAVE (Google Ads)
+   Só existe quando o export tem granularidade de termo de busca.
+   ═══════════════════════════════════════════════════════════════════════ */
+function secKeywords(mes) {
+  const ks = (mes.keywords || []).slice().sort((a, b) => b.investimento - a.investimento);
+  if (!ks.length) return vazio('Palavras-chave', 'Este recorte não tem detalhamento por palavra-chave.');
+
+  const t = ks.reduce((a, k) => ({
+    investimento: a.investimento + k.investimento,
+    impressoes:   a.impressoes   + k.impressoes,
+    cliques:      a.cliques      + k.cliques,
+    leads:        a.leads        + k.leads
+  }), { investimento: 0, impressoes: 0, cliques: 0, leads: 0 });
+
+  const semConv   = ks.filter(k => k.investimento > 0 && !k.leads);
+  const gastoSemConv = semConv.reduce((a, k) => a + k.investimento, 0);
+  const comConv   = ks.filter(k => k.leads > 0);
+  const MIN_LEADS = 3;   // abaixo disso o CPL é ruído, não desempenho
+  const porCPL    = arr => arr.slice().sort((a, b) => div(a.investimento, a.leads) - div(b.investimento, b.leads))[0];
+  const melhor    = porCPL(comConv.filter(k => k.leads >= MIN_LEADS)) || porCPL(comConv);
+
+  /* termos que aparecem em mais de uma campanha disputam entre si no leilão */
+  const porTermo = {};
+  ks.forEach(k => { (porTermo[k.termo] = porTermo[k.termo] || []).push(k); });
+  const duplicados = Object.entries(porTermo).filter(([, v]) => v.length > 1);
+  const rotulo = k => (porTermo[k.termo].length > 1 ? `${k.termo} · ${k.campanha}` : k.termo);
+
+  const tabela = `<div class="tbl-scroll"><table>
+    <thead><tr>
+      <th>Palavra-chave</th><th>Campanha</th><th>Correspondência</th>
+      <th class="r">Investimento</th><th class="r">Leads</th><th class="r">CPL</th><th class="r">Cliques</th><th class="r">Impressões</th>
+    </tr></thead>
+    <tbody>${ks.map(k => `<tr>
+      <td class="cam" style="color:var(--text)">${esc(k.termo)}</td>
+      <td class="cam">${esc(k.campanha)}</td>
+      <td class="cam">${esc(k.correspondencia || '—')}</td>
+      <td class="r">${brl(k.investimento)}</td>
+      <td class="r">${num(k.leads, 1)}</td>
+      <td class="r"${!k.leads && k.investimento > 0 ? ' style="color:var(--red)"' : ''}>${cpx(k.investimento, k.leads)}</td>
+      <td class="r">${num(k.cliques)}</td>
+      <td class="r">${num(k.impressoes)}</td>
+    </tr>`).join('')}</tbody>
+    <tfoot><tr>
+      <td>Total</td><td></td><td></td>
+      <td class="r">${brl(t.investimento)}</td>
+      <td class="r">${num(t.leads, 1)} leads</td>
+      <td class="r">CPL ${cpx(t.investimento, t.leads)}</td>
+      <td class="r">${num(t.cliques)}</td>
+      <td class="r">${num(t.impressoes)}</td>
+    </tr></tfoot>
+  </table></div>`;
+
+  /* resumo por tipo de correspondência */
+  const porCorr = {};
+  ks.forEach(k => {
+    const c = porCorr[k.correspondencia || '—'] = porCorr[k.correspondencia || '—'] || { investimento: 0, leads: 0, cliques: 0 };
+    c.investimento += k.investimento; c.leads += k.leads; c.cliques += k.cliques;
+  });
+  const corr = card('Desempenho por Tipo de Correspondência', '', `
+    <div class="tbl-scroll"><table>
+      <thead><tr><th>Correspondência</th><th class="r">Investimento</th><th class="r">Leads</th><th class="r">CPL</th><th class="r">% do Invest.</th></tr></thead>
+      <tbody>${Object.entries(porCorr).sort((a, b) => b[1].investimento - a[1].investimento).map(([nome, v]) => `<tr>
+        <td>${esc(nome)}</td>
+        <td class="r">${brl(v.investimento)}</td>
+        <td class="r">${num(v.leads, 1)}</td>
+        <td class="r">${cpx(v.investimento, v.leads)}</td>
+        <td class="r">${pct(div(v.investimento, t.investimento) * 100)}</td>
+      </tr>`).join('')}</tbody>
+    </table></div>`);
+
+  const avisoDup = duplicados.length ? [{
+    tipo: 'amber', icone: '🔁',
+    titulo: `${duplicados.length === 1 ? 'Uma palavra-chave disputa' : duplicados.length + ' palavras-chave disputam'} entre campanhas`,
+    texto: duplicados.map(([termo, v]) => `"${termo}" aparece em ${v.map(x => x.campanha).join(' e ')}`).join('; ') +
+      '. Quando o mesmo termo está em mais de uma campanha, elas concorrem no mesmo leilão e o Google escolhe uma — o que costuma encarecer o clique e embaralhar a leitura de qual campanha entregou o resultado.'
+  }] : [];
+
+  return `<div class="wrap">
+    <div class="ey" style="color:var(--google)">Google Ads · ${esc(mes.rotulo)}${mes.parcial ? ' (parcial)' : ''}</div>
+    <h1 class="ttl">Palavras-chave</h1>
+    <p class="sub">${plural(ks.length, 'termo', 'termos')} com veiculação em ${mes.periodo}.</p>
+    ${alertas(avisoDup)}
+    <div class="kpi-grid">
+      ${kpi('go', 'Termos com veiculação', num(ks.length), `${comConv.length} ${comConv.length === 1 ? 'converteu' : 'converteram'} · ${semConv.length} sem conversão`)}
+      ${melhor ? kpi('go', 'Melhor CPL', cpx(melhor.investimento, melhor.leads), `${esc(melhor.termo)}${porTermo[melhor.termo].length > 1 ? ' · ' + esc(melhor.campanha) : ''}`, `${num(melhor.leads, 1)} leads`, 'up')
+               : kpi('go', 'Melhor CPL', '—', 'Nenhum termo converteu no período')}
+      ${kpi('go', 'Investimento sem retorno', brl0(gastoSemConv), `${pct(div(gastoSemConv, t.investimento) * 100)} da verba do período`, semConv.length ? plural(semConv.length, 'termo', 'termos') : 'nenhum', gastoSemConv ? 'dn' : 'up')}
+    </div>
+    ${card('Detalhamento por Palavra-chave', 'ordenado por investimento ↓',
+      tabela +
+      barras('Leads por Palavra-chave', comConv.slice().sort((a, b) => b.leads - a.leads).map(k => ({ nome: rotulo(k), valor: k.leads })), 'var(--teal)', v => num(v, 1) + ' leads') +
+      barras('Investimento por Palavra-chave', ks.filter(k => k.investimento > 0).map(k => ({ nome: rotulo(k), valor: k.investimento })), 'var(--google)', brl0)
+    )}
+    ${corr}
+  </div>`;
+}
+
+function vazio(titulo, texto) {
+  return `<div class="wrap">
+    <h1 class="ttl">${titulo}</h1>
+    <p class="sub">${texto}</p>
+  </div>`;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
+   ESTADO INICIAL — enquanto não há mês carregado
+   ═══════════════════════════════════════════════════════════════════════ */
+const PENDENCIAS = [
+  { st: 'block', t: 'Export do Google Ads',
+    d: 'A base por <strong>dia + palavra-chave</strong> exportada da conta, com as colunas Custo, Impr., Cliques e Conversões. É a única fonte do relatório — a conta roda apenas Google Ads.' },
+  { st: 'ok', t: 'Definição do que conta como lead',
+    d: 'As campanhas são de pesquisa otimizadas para captação de leads. Confirmar qual ação está marcada como conversão na conta (clique-para-WhatsApp, ligação, formulário) para que o rótulo "lead" no relatório corresponda ao que o cliente entende por lead.' },
+  { st: 'ok', t: 'Orçamento planejado',
+    d: 'Verba prevista no período e, se houver, o plano diário por especialidade. Alimenta os blocos <em>Orçamento Esperado x Investido Real</em> e <em>Investimento Diário por Especialidade</em>; sem eles, os blocos não são renderizados.' },
+  { st: 'ok', t: 'Publicação',
+    d: 'Deploy na Vercel a partir deste repositório, servido em <code>/dashboard</code>, com <code>X-Robots-Tag: noindex</code> já configurado no <code>vercel.json</code>.' }
+];
+
+function telaSetup() {
+  return `<div class="hdr"><div class="hdr-row">
+      <div class="brand"><div class="brand-dot"></div><span class="brand-name">${DADOS.cliente}</span></div>
+      <span class="period-chip">Aguardando export</span>
+    </div></div>
+    <div class="setup">
+      <div class="ey">Relatório de Performance · Google Ads</div>
+      <h1>Dashboard pronto — falta carregar o export</h1>
+      <p class="lead">A estrutura do relatório está construída e espelha a da Alpha Policlínica: visão consolidada, detalhamento por campanha e por palavra-chave, com seletor de mês. Todos os números — CPL, CTR, ritmo diário, projeções e percentuais — são calculados sozinhos. Falta apenas carregar o export da conta.</p>
+      ${PENDENCIAS.map((p, i) => `<div class="step">
+        <div class="step-num">${i + 1}</div>
+        <div>
+          <div class="step-ttl">${p.t}<span class="pend ${p.st}">${p.st === 'block' ? 'bloqueia' : 'definir'}</span></div>
+          <div class="step-txt">${p.d}</div>
+        </div>
+      </div>`).join('')}
+      <div class="step" style="margin-top:22px;background:var(--s2)">
+        <div class="step-num">↓</div>
+        <div>
+          <div class="step-ttl">Como carregar um mês</div>
+          <div class="step-txt">Abra <code>dashboard.html</code>, localize a constante <code>DADOS.meses</code> no topo do bloco de script e acrescente um objeto de mês seguindo a estrutura documentada logo acima dela. Nada mais precisa ser alterado — a página se monta a partir desse objeto.</div>
+        </div>
+      </div>
+    </div>
+    <div class="foot">${DADOS.cliente} · Relatório operado por ${DADOS.operador} · Documento confidencial</div>`;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
+   MONTAGEM E NAVEGAÇÃO
+   ═══════════════════════════════════════════════════════════════════════ */
+const ABAS = [
+  { id: 'geral',      rotulo: 'Visão Geral',    render: secGeral },
+  { id: 'campanhas',  rotulo: 'Campanhas',      render: secCampanhas },
+  { id: 'chaves',     rotulo: 'Palavras-chave', render: secKeywords, quando: m => (m.keywords || []).length }
+];
+
+const abasDe = mes => ABAS.filter(a => !a.quando || a.quando(mes));
+
+let mesAtual = DADOS.meses.length ? DADOS.meses[0].id : null;
+let abaAtual = 'geral';
+
+function render() {
+  const app = document.getElementById('app');
+
+  if (!DADOS.meses.length) { app.innerHTML = telaSetup(); return; }
+
+  const mes = DADOS.meses.find(m => m.id === mesAtual) || DADOS.meses[0];
+  const disponiveis = abasDe(mes);
+  const aba = disponiveis.find(a => a.id === abaAtual) || disponiveis[0];
+  abaAtual = aba.id;
+
+  const seletor = DADOS.meses.length > 1 ? `<div class="switch"><div class="switch-inner">
+    ${DADOS.meses.map(m => `<button class="switch-btn ${m.id === mes.id ? 'active' : ''}" data-mes="${m.id}">${esc(m.rotulo)}</button>`).join('')}
+  </div></div>` : '';
+
+  app.innerHTML = seletor + `
+    <div class="hdr">
+      <div class="hdr-row">
+        <div class="brand"><div class="brand-dot"></div><span class="brand-name">${DADOS.cliente}</span></div>
+        <span class="period-chip">${esc(mes.rotulo)} · ${esc(mes.periodo)}${mes.parcial ? ' (parcial)' : ''}</span>
+      </div>
+      <div class="tabs">
+        ${disponiveis.map(a => `<button class="tab ${a.id === abaAtual ? 'on' : ''}" data-aba="${a.id}">${a.rotulo}</button>`).join('')}
+      </div>
+    </div>
+    <div class="sec on">${aba.render(mes)}</div>
+    <div class="foot">${DADOS.cliente} · Relatório operado por ${DADOS.operador} · Documento confidencial</div>`;
+}
+
+document.addEventListener('click', e => {
+  const btnMes = e.target.closest('[data-mes]');
+  if (btnMes) { mesAtual = btnMes.dataset.mes; abaAtual = 'geral'; render(); window.scrollTo({ top: 0, behavior: 'smooth' }); return; }
+  const btnAba = e.target.closest('[data-aba]');
+  if (btnAba) { abaAtual = btnAba.dataset.aba; render(); window.scrollTo({ top: 0, behavior: 'smooth' }); }
+});
+
+render();
+</script>
+
+</body>
+</html>
